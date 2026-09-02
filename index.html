@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refrigerator Door Production Planning Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <style>
+        body {
+            background-color: #0d1b2a;
+            color: #e0fbfc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-card {
+            background-color: #1b263b;
+            border: 1px solid #415a77;
+        }
+        /* ปรับแต่ง Tom Select ให้เข้ากับธีมมืด */
+        .ts-control {
+            background-color: #0d1b2a !important;
+            color: #ffffff !important;
+            border-color: #415a77 !important;
+        }
+        .ts-dropdown {
+            background-color: #1b263b !important;
+            color: #ffffff !important;
+            border-color: #415a77 !important;
+        }
+        .ts-dropdown .active {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-cyan-400">Refrigerator Door Production Planning</h1>
+                <p class="text-sm text-gray-400">ระบบวางแผนการผลิตฝาตู้เย็นแต่ละรุ่น (Line A, Line B, Line C)</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="addRow()" class="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white px-4 py-2 rounded-lg font-semibold shadow-lg transition flex items-center gap-2">
+                    <span>+ เพิ่มแถวการผลิต</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="custom-card rounded-xl shadow-2xl overflow-hidden p-4">
+            <div class="overflow-x-auto">
+                <table id="planningTable" class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-700 text-cyan-300 text-sm">
+                            <th class="p-3">Line</th>
+                            <th class="p-3">Model</th>
+                            <th class="p-3">Door</th>
+                            <th class="p-3">Round/HR</th>
+                            <th class="p-3">Time</th>
+                            <th class="p-3">Pallet</th>
+                            <th class="p-3">Jig</th>
+                            <th class="p-3 text-cyan-400 font-bold">Plan (Auto)</th>
+                            <th class="p-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-gray-800 text-sm">
+                        <tr>
+                            <td class="p-2">
+                                <select class="line-select w-full bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white">
+                                    <option value="Line A">Line A</option>
+                                    <option value="Line B">Line B</option>
+                                    <option value="Line C">Line C</option>
+                                </select>
+                            </td>
+                            <td class="p-2 w-56">
+                                <select class="searchable-model w-full">
+                                    <option value="">-- ค้นหา Model --</option>
+                                    <option value="BM 23">BM 23</option>
+                                    <option value="BM 29">BM 29</option>
+                                    <option value="TM19">TM19</option>
+                                    <option value="TM21">TM21</option>
+                                </select>
+                            </td>
+                            <td class="p-2 w-40">
+                                <select class="searchable-door w-full">
+                                    <option value="">-- เลือก Door --</option>
+                                    <option value="F">F</option>
+                                    <option value="R">R</option>
+                                    <option value="RR">RR</option>
+                                    <option value="RL">RL</option>
+                                    <option value="FT">FT</option>
+                                    <option value="FB">FB</option>
+                                    <option value="FR">FR</option>
+                                    <option value="FL">FL</option>
+                                </select>
+                            </td>
+                            <td class="p-2"><input type="number" class="round-hr w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0" oninput="calculatePlan(this)"></td>
+                            <td class="p-2"><input type="number" class="time-val w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0" oninput="calculatePlan(this)"></td>
+                            <td class="p-2"><input type="number" class="pallet w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0"></td>
+                            <td class="p-2"><input type="number" class="jig w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0" oninput="calculatePlan(this)"></td>
+                            <td class="p-2 font-bold text-cyan-400 text-center plan-val">1</td>
+                            <td class="p-2 text-center">
+                                <button onclick="deleteRow(this)" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white px-2 py-1 rounded transition">ลบ</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4 flex justify-end">
+                <button onclick="saveData()" class="bg-cyan-500 hover:bg-cyan-600 text-gray-900 font-bold px-6 py-2 rounded-lg shadow transition">
+                    บันทึกข้อมูลแผนผลิต
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // รายการตัวเลือก Model และ Door
+        const modelOptions = [
+            {value: 'BM 23', text: 'BM 23'},
+            {value: 'BM 29', text: 'BM 29'},
+            {value: 'TM19', text: 'TM19'},
+            {value: 'TM21', text: 'TM21'}
+        ];
+
+        const doorOptions = [
+            {value: 'F', text: 'F'}, {value: 'R', text: 'R'},
+            {value: 'RR', text: 'RR'}, {value: 'RL', text: 'RL'},
+            {value: 'FT', text: 'FT'}, {value: 'FB', text: 'FB'},
+            {value: 'FR', text: 'FR'}, {value: 'FL', text: 'FL'}
+        ];
+
+        // ฟังก์ชันคำนวณ Plan = Round/HR * Time * Jig
+        function calculatePlan(element) {
+            const row = element.closest('tr');
+            const roundHr = parseFloat(row.querySelector('.round-hr').value) || 0;
+            const time = parseFloat(row.querySelector('.time-val').value) || 0;
+            const jig = parseFloat(row.querySelector('.jig').value) || 0;
+            
+            const plan = roundHr * time * jig;
+            row.querySelector('.plan-val').textContent = plan.toLocaleString();
+        }
+
+        // ฟังก์ชันเพิ่มแถวใหม่
+        function addRow() {
+            const tbody = document.getElementById('tableBody');
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td class="p-2">
+                    <select class="line-select w-full bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white">
+                        <option value="Line A">Line A</option>
+                        <option value="Line B">Line B</option>
+                        <option value="Line C">Line C</option>
+                    </select>
+                </td>
+                <td class="p-2 w-56">
+                    <select class="searchable-model w-full"></select>
+                </td>
+                <td class="p-2 w-40">
+                    <select class="searchable-door w-full"></select>
+                </td>
+                <td class="p-2"><input type="number" class="round-hr w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-2"><input type="number" class="time-val w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-2"><input type="number" class="pallet w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0"></td>
+                <td class="p-2"><input type="number" class="jig w-20 bg-[#0d1b2a] border border-gray-600 rounded p-2 text-white text-center" value="1" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-2 font-bold text-cyan-400 text-center plan-val">1</td>
+                <td class="p-2 text-center">
+                    <button onclick="deleteRow(this)" class="bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white px-2 py-1 rounded transition">ลบ</button>
+                </td>
+            `;
+            
+            tbody.appendChild(newRow);
+            initSelectPlugins(newRow);
+        }
+
+        // ฟังก์ชันลบแถว
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            if(document.querySelectorAll('#tableBody tr').length > 1) {
+                row.remove();
+            } else {
+                alert("ต้องมีอย่างน้อย 1 แถวในตาราง");
+            }
+        }
+
+        // เปิดใช้งาน Tom Select สำหรับช่องค้นหา Model และ Door
+        function initSelectPlugins(scope = document) {
+            scope.querySelectorAll('.searchable-model').forEach(el => {
+                if (!el.tomselect) {
+                    new TomSelect(el, {
+                        options: modelOptions,
+                        create: true,
+                        placeholder: 'ค้นหา/เลือก Model...'
+                    });
+                }
+            });
+
+            scope.querySelectorAll('.search
