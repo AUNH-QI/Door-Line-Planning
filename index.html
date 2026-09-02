@@ -6,9 +6,6 @@
     <title>Daily Door Planning - Production Line Management</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tom Select CSS สำหรับทำ Dropdown ที่พิมพ์ค้นหาได้ (เฉพาะ Line C) -->
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <style>
         body {
             background-color: #f3f4f6;
@@ -22,23 +19,6 @@
             background-color: #ffffff;
             border: 1px solid #e5e7eb;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
-        .ts-control {
-            background-color: #f9fafb !important;
-            color: #1f2937 !important;
-            border-color: #d1d5db !important;
-            border-radius: 0.5rem !important;
-            padding: 0.5rem !important;
-        }
-        .ts-dropdown {
-            background-color: #ffffff !important;
-            color: #1f2937 !important;
-            border-color: #d1d5db !important;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .ts-dropdown .active {
-            background-color: #e0e7ff !important;
-            color: #3730a3 !important;
         }
     </style>
 </head>
@@ -81,9 +61,6 @@
                     <h2 id="tableTitle" class="text-xl font-bold text-gray-800">ตารางวางแผนการผลิต: Line A</h2>
                     <p class="text-sm text-gray-500" id="tableDesc">รายการรุ่นและประตูตามกำหนดการมาตรฐานของ Line A</p>
                 </div>
-                <button id="btnAddRow" onclick="addRow()" class="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
-                    <span>+ เพิ่มแถวการผลิต</span>
-                </button>
             </div>
 
             <div class="overflow-x-auto">
@@ -143,7 +120,7 @@
             { model: "TM 1012", door: "R" }
         ];
 
-        // รายการ Model และ Door ของ Line B (ตามรูปที่ให้)
+        // รายการ Model และ Door ของ Line B
         const lineBModels = [
             { model: "EHRT 2070 NL", door: "F" },
             { model: "EHRT 2070 NL", door: "R" },
@@ -155,21 +132,23 @@
             { model: "Door - 6.6 Cu.(199) F", door: "R" }
         ];
 
-        const modelOptions = [
-            {value: 'BM 23 29', text: 'BM 23 29'},
-            {value: 'TM19/21', text: 'TM19/21'},
-            {value: 'BM 35', text: 'BM 35'},
-            {value: 'TM25', text: 'TM25'}
+        // รายการ Model และ Door ของ Line C (อัปเดตตามรูปภาพล่าสุด)
+        const lineCModels = [
+            { model: "BM 23 29", door: "RR" },
+            { model: "BM 23 29", door: "RL" },
+            { model: "BM 23 29", door: "FT" },
+            { model: "BM 23 29", door: "FB" },
+            { model: "TM 19/21", door: "F" },
+            { model: "TM 19/21", door: "R" },
+            { model: "FUF 14", door: "R" },
+            { model: "FUF 22", door: "R" },
+            { model: "BM 28 FL FR", door: "FR" },
+            { model: "BM 28 FL FR", door: "FL" },
+            { model: "TM 14", door: "F" },
+            { model: "TM 14", door: "R" }
         ];
 
-        const doorOptions = [
-            {value: 'F', text: 'F'}, {value: 'R', text: 'R'},
-            {value: 'RR', text: 'RR'}, {value: 'RL', text: 'RL'},
-            {value: 'FT', text: 'FT'}, {value: 'FB', text: 'FB'},
-            {value: 'FR', text: 'FR'}, {value: 'FL', text: 'FL'}
-        ];
-
-        // ข้อมูลเริ่มต้นแยกตาม Line
+        // ข้อมูลเริ่มต้นแยกตาม Line (ล็อกค่าตายตัวทุก Line ไม่ใช้ dropdown)
         let productionData = {
             'Line A': lineAModels.map(item => ({
                 model: item.model,
@@ -187,9 +166,14 @@
                 pallet: 2,
                 jig: 1
             })),
-            'Line C': [
-                { model: 'BM 35', door: 'FT', roundHr: 8, time: 8, pallet: 2, jig: 1 }
-            ]
+            'Line C': lineCModels.map(item => ({
+                model: item.model,
+                door: item.door,
+                roundHr: 10,
+                time: 8,
+                pallet: 2,
+                jig: 1
+            }))
         };
 
         let currentLine = 'Line A';
@@ -204,16 +188,7 @@
             activeBtn.className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow";
 
             document.getElementById('tableTitle').textContent = `ตารางวางแผนการผลิต: ${lineName}`;
-            
-            // ถ้าเป็น Line A หรือ Line B ให้ซ่อนปุ่มเพิ่มแถว เพราะใช้รายการมาตรฐานตายตัว
-            const btnAdd = document.getElementById('btnAddRow');
-            if (lineName === 'Line A' || lineName === 'Line B') {
-                btnAdd.style.display = 'none';
-                document.getElementById('tableDesc').textContent = `รายการรุ่นและประตูตามกำหนดการมาตรฐานของ ${lineName}`;
-            } else {
-                btnAdd.style.display = 'flex';
-                document.getElementById('tableDesc').textContent = 'ค้นหารุ่นฝาตู้เย็นและคำนวณแผนอัตโนมัติประจำไลน์';
-            }
+            document.getElementById('tableDesc').textContent = `รายการรุ่นและประตูตามกำหนดการมาตรฐานของ ${lineName}`;
 
             renderTable();
         }
@@ -234,13 +209,9 @@
 
             const items = productionData[currentLine] || [];
 
-            if (items.length === 0) {
-                addRowData({ model: '', door: '', roundHr: 1, time: 1, pallet: 1, jig: 1 });
-            } else {
-                items.forEach(item => {
-                    addRowData(item);
-                });
-            }
+            items.forEach(item => {
+                addRowData(item);
+            });
         }
 
         function addRowData(data) {
@@ -250,71 +221,18 @@
             
             const planVal = (data.roundHr || 0) * (data.time || 0) * (data.jig || 0);
 
-            if (currentLine === 'Line A' || currentLine === 'Line B') {
-                // สำหรับ Line A และ Line B: Model และ Door เป็นข้อความแสดงผลธรรมดา ไม่ใช่ Dropdown
-                newRow.innerHTML = `
-                    <td class="p-3 font-medium text-gray-800 model-text">${data.model}</td>
-                    <td class="p-3 font-medium text-gray-800 door-text">${data.door}</td>
-                    <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}" min="0"></td>
-                    <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
-                    <td class="p-3 text-center text-gray-400">-</td>
-                `;
-                tbody.appendChild(newRow);
-            } else {
-                // สำหรับ Line C: ใช้ Dropdown ค้นหาได้ปกติ และมีปุ่มลบ
-                newRow.innerHTML = `
-                    <td class="p-3 w-72">
-                        <select class="searchable-model w-full"></select>
-                    </td>
-                    <td class="p-3 w-48">
-                        <select class="searchable-door w-full"></select>
-                    </td>
-                    <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}" min="0"></td>
-                    <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="deleteRow(this)" class="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1.5 rounded-lg transition font-medium">ลบ</button>
-                    </td>
-                `;
-                
-                tbody.appendChild(newRow);
-
-                const modelSelect = newRow.querySelector('.searchable-model');
-                const doorSelect = newRow.querySelector('.searchable-door');
-
-                const modelTs = new TomSelect(modelSelect, {
-                    options: modelOptions,
-                    create: true,
-                    placeholder: 'ค้นหาหรือเลือก Model...'
-                });
-                if(data.model) modelTs.setValue(data.model);
-
-                const doorTs = new TomSelect(doorSelect, {
-                    options: doorOptions,
-                    create: true,
-                    placeholder: 'เลือก Door...'
-                });
-                if(data.door) doorTs.setValue(data.door);
-            }
-        }
-
-        function addRow() {
-            if (currentLine === 'Line A' || currentLine === 'Line B') return; // ล็อกค่าตายตัวตามรายการมาตรฐาน
-            addRowData({ model: '', door: '', roundHr: 1, time: 1, pallet: 1, jig: 1 });
-        }
-
-        function deleteRow(button) {
-            const row = button.closest('tr');
-            if(document.querySelectorAll('#tableBody tr').length > 1) {
-                row.remove();
-            } else {
-                alert("ต้องมีอย่างน้อย 1 แถวในตาราง");
-            }
+            // ทุก Line ใช้รูปแบบข้อความแสดงผลตายตัวตามรายการมาตรฐาน
+            newRow.innerHTML = `
+                <td class="p-3 font-medium text-gray-800 model-text">${data.model}</td>
+                <td class="p-3 font-medium text-gray-800 door-text">${data.door}</td>
+                <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}" min="0"></td>
+                <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
+                <td class="p-3 text-center text-gray-400">-</td>
+            `;
+            tbody.appendChild(newRow);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -326,25 +244,14 @@
             const currentRowsData = [];
             
             rows.forEach(row => {
-                if (currentLine === 'Line A' || currentLine === 'Line B') {
-                    currentRowsData.push({
-                        model: row.querySelector('.model-text').textContent,
-                        door: row.querySelector('.door-text').textContent,
-                        roundHr: parseFloat(row.querySelector('.round-hr').value) || 0,
-                        time: parseFloat(row.querySelector('.time-val').value) || 0,
-                        pallet: parseFloat(row.querySelector('.pallet').value) || 0,
-                        jig: parseFloat(row.querySelector('.jig').value) || 0
-                    });
-                } else {
-                    currentRowsData.push({
-                        model: row.querySelector('.searchable-model').value,
-                        door: row.querySelector('.searchable-door').value,
-                        roundHr: parseFloat(row.querySelector('.round-hr').value) || 0,
-                        time: parseFloat(row.querySelector('.time-val').value) || 0,
-                        pallet: parseFloat(row.querySelector('.pallet').value) || 0,
-                        jig: parseFloat(row.querySelector('.jig').value) || 0
-                    });
-                }
+                currentRowsData.push({
+                    model: row.querySelector('.model-text').textContent,
+                    door: row.querySelector('.door-text').textContent,
+                    roundHr: parseFloat(row.querySelector('.round-hr').value) || 0,
+                    time: parseFloat(row.querySelector('.time-val').value) || 0,
+                    pallet: parseFloat(row.querySelector('.pallet').value) || 0,
+                    jig: parseFloat(row.querySelector('.jig').value) || 0
+                });
             });
 
             productionData[currentLine] = currentRowsData;
