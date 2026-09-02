@@ -6,7 +6,7 @@
     <title>Daily Door Planning - Production Line Management</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tom Select CSS สำหรับทำ Dropdown ที่พิมพ์ค้นหาได้ (เฉพาะ Line อื่นๆ) -->
+    <!-- Tom Select CSS สำหรับทำ Dropdown ที่พิมพ์ค้นหาได้ (เฉพาะ Line C) -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <style>
@@ -115,7 +115,7 @@
     </div>
 
     <script>
-        // รายการ Model และ Door แบบเจาะจงตามรูปสำหรับ Line A
+        // รายการ Model และ Door ของ Line A
         const lineAModels = [
             { model: "620 550 หน้าเรียบ", door: "R" },
             { model: "620 550 ก๊อกน้ำ", door: "R" },
@@ -143,6 +143,18 @@
             { model: "TM 1012", door: "R" }
         ];
 
+        // รายการ Model และ Door ของ Line B (ตามรูปที่ให้)
+        const lineBModels = [
+            { model: "EHRT 2070 NL", door: "F" },
+            { model: "EHRT 2070 NL", door: "R" },
+            { model: "EHRT 2570 NL", door: "F" },
+            { model: "EHRT 2570 NL", door: "R" },
+            { model: "Door 5.3 Cu.(159) C", door: "R" },
+            { model: "Door 5.3 Cu.(159) F", door: "R" },
+            { model: "Door - 6.6 Cu.(199) C", door: "R" },
+            { model: "Door - 6.6 Cu.(199) F", door: "R" }
+        ];
+
         const modelOptions = [
             {value: 'BM 23 29', text: 'BM 23 29'},
             {value: 'TM19/21', text: 'TM19/21'},
@@ -167,9 +179,14 @@
                 pallet: 2,
                 jig: 1
             })),
-            'Line B': [
-                { model: 'TM19/21', door: 'R', roundHr: 12, time: 8, pallet: 1, jig: 1 }
-            ],
+            'Line B': lineBModels.map(item => ({
+                model: item.model,
+                door: item.door,
+                roundHr: 10,
+                time: 8,
+                pallet: 2,
+                jig: 1
+            })),
             'Line C': [
                 { model: 'BM 35', door: 'FT', roundHr: 8, time: 8, pallet: 2, jig: 1 }
             ]
@@ -188,11 +205,11 @@
 
             document.getElementById('tableTitle').textContent = `ตารางวางแผนการผลิต: ${lineName}`;
             
-            // ถ้าเป็น Line A ให้ซ่อนปุ่มเพิ่มแถว เพราะใช้รายการมาตรฐานตามรูป
+            // ถ้าเป็น Line A หรือ Line B ให้ซ่อนปุ่มเพิ่มแถว เพราะใช้รายการมาตรฐานตายตัว
             const btnAdd = document.getElementById('btnAddRow');
-            if (lineName === 'Line A') {
+            if (lineName === 'Line A' || lineName === 'Line B') {
                 btnAdd.style.display = 'none';
-                document.getElementById('tableDesc').textContent = 'รายการรุ่นและประตูตามกำหนดการมาตรฐานของ Line A';
+                document.getElementById('tableDesc').textContent = `รายการรุ่นและประตูตามกำหนดการมาตรฐานของ ${lineName}`;
             } else {
                 btnAdd.style.display = 'flex';
                 document.getElementById('tableDesc').textContent = 'ค้นหารุ่นฝาตู้เย็นและคำนวณแผนอัตโนมัติประจำไลน์';
@@ -233,8 +250,8 @@
             
             const planVal = (data.roundHr || 0) * (data.time || 0) * (data.jig || 0);
 
-            if (currentLine === 'Line A') {
-                // สำหรับ Line A: Model และ Door เป็นข้อความแสดงผลธรรมดา ไม่ใช่ Dropdown
+            if (currentLine === 'Line A' || currentLine === 'Line B') {
+                // สำหรับ Line A และ Line B: Model และ Door เป็นข้อความแสดงผลธรรมดา ไม่ใช่ Dropdown
                 newRow.innerHTML = `
                     <td class="p-3 font-medium text-gray-800 model-text">${data.model}</td>
                     <td class="p-3 font-medium text-gray-800 door-text">${data.door}</td>
@@ -247,7 +264,7 @@
                 `;
                 tbody.appendChild(newRow);
             } else {
-                // สำหรับ Line B และ Line C: ใช้ Dropdown ค้นหาได้ปกติ และมีปุ่มลบ
+                // สำหรับ Line C: ใช้ Dropdown ค้นหาได้ปกติ และมีปุ่มลบ
                 newRow.innerHTML = `
                     <td class="p-3 w-72">
                         <select class="searchable-model w-full"></select>
@@ -287,7 +304,7 @@
         }
 
         function addRow() {
-            if (currentLine === 'Line A') return; // Line A ล็อกค่าตายตัวตามรายการมาตรฐาน
+            if (currentLine === 'Line A' || currentLine === 'Line B') return; // ล็อกค่าตายตัวตามรายการมาตรฐาน
             addRowData({ model: '', door: '', roundHr: 1, time: 1, pallet: 1, jig: 1 });
         }
 
@@ -309,7 +326,7 @@
             const currentRowsData = [];
             
             rows.forEach(row => {
-                if (currentLine === 'Line A') {
+                if (currentLine === 'Line A' || currentLine === 'Line B') {
                     currentRowsData.push({
                         model: row.querySelector('.model-text').textContent,
                         door: row.querySelector('.door-text').textContent,
