@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Door Production Planning</title>
+    <title>Daily Door Planning - Production Line Management</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tom Select CSS สำหรับทำ Dropdown ที่พิมพ์ค้นหาได้ -->
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <style>
@@ -62,23 +64,25 @@
 
     <div class="flex-1 ml-20 p-8">
         
-        <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
+        <!-- Top Header Card with Line Selector Buttons -->
+        <div class="custom-card rounded-2xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <span class="text-xs font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">PRODUCTION LINE MANAGEMENT</span>
-                <h1 class="text-3xl font-extrabold text-gray-800 mt-2">Refrigerator Door Planning</h1>
+                <h1 class="text-3xl font-extrabold text-gray-800 mt-2">Daily Door Planning</h1>
             </div>
-            <div class="flex gap-4">
-                <div class="bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-md font-semibold flex items-center gap-2 cursor-pointer hover:bg-indigo-700 transition">
-                    <span>🚀 Project Active</span>
-                </div>
+            <!-- ปุ่มเลือก Line A, B, C ด้านขวาบน -->
+            <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-xl border border-gray-200">
+                <button onclick="switchLine('Line A')" id="btn-Line-A" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow">Line A</button>
+                <button onclick="switchLine('Line B')" id="btn-Line-B" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-indigo-600">Line B</button>
+                <button onclick="switchLine('Line C')" id="btn-Line-C" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-indigo-600">Line C</button>
             </div>
         </div>
 
         <div class="custom-card rounded-2xl p-6 shadow-lg">
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800">ตารางวางแผนการผลิตฝาตู้เย็น</h2>
-                    <p class="text-sm text-gray-500">เลือกไลน์การผลิต ค้นหารุ่น และคำนวณแผนอัตโนมัติ</p>
+                    <h2 id="tableTitle" class="text-xl font-bold text-gray-800">ตารางวางแผนการผลิต: Line A</h2>
+                    <p class="text-sm text-gray-500">ค้นหารุ่นฝาตู้เย็นและคำนวณแผนอัตโนมัติประจำไลน์</p>
                 </div>
                 <button onclick="addRow()" class="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
                     <span>+ เพิ่มแถวการผลิต</span>
@@ -89,8 +93,7 @@
                 <table id="planningTable" class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-gray-200 text-indigo-600 text-sm bg-gray-50/50">
-                            <th class="p-3.5 rounded-l-xl">Line</th>
-                            <th class="p-3.5">Model (Searchable)</th>
+                            <th class="p-3.5 rounded-l-xl">Model (Searchable)</th>
                             <th class="p-3.5">Door (Searchable)</th>
                             <th class="p-3.5 text-center">Round/HR</th>
                             <th class="p-3.5 text-center">Time</th>
@@ -101,45 +104,7 @@
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-100 text-sm">
-                        <tr class="hover:bg-gray-50/80 transition">
-                            <td class="p-3">
-                                <select class="line-select w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800 focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Line A">Line A</option>
-                                    <option value="Line B">Line B</option>
-                                    <option value="Line C">Line C</option>
-                                </select>
-                            </td>
-                            <td class="p-3 w-64">
-                                <select class="searchable-model w-full">
-                                    <option value="">-- ค้นหา Model --</option>
-                                    <option value="BM 23 29">BM 23 29</option>
-                                    <option value="TM19/21">TM19/21</option>
-                                    <option value="BM 35">BM 35</option>
-                                    <option value="TM25">TM25</option>
-                                </select>
-                            </td>
-                            <td class="p-3 w-44">
-                                <select class="searchable-door w-full">
-                                    <option value="">-- เลือก Door --</option>
-                                    <option value="F">F</option>
-                                    <option value="R">R</option>
-                                    <option value="RR">RR</option>
-                                    <option value="RL">RL</option>
-                                    <option value="FT">FT</option>
-                                    <option value="FB">FB</option>
-                                    <option value="FR">FR</option>
-                                    <option value="FL">FL</option>
-                                </select>
-                            </td>
-                            <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="10" min="0" oninput="calculatePlan(this)"></td>
-                            <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="8" min="0" oninput="calculatePlan(this)"></td>
-                            <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="2" min="0"></td>
-                            <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="1" min="0" oninput="calculatePlan(this)"></td>
-                            <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">80</td>
-                            <td class="p-3 text-center">
-                                <button onclick="deleteRow(this)" class="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1.5 rounded-lg transition font-medium">ลบ</button>
-                            </td>
-                        </tr>
+                        <!-- แถวข้อมูลจะถูกโหลดแบบ Dynamic ตาม Line ที่เลือก -->
                     </tbody>
                 </table>
             </div>
@@ -168,6 +133,39 @@
             {value: 'FR', text: 'FR'}, {value: 'FL', text: 'FL'}
         ];
 
+        // เก็บข้อมูลแยกตามแต่ละ Line
+        let productionData = {
+            'Line A': [
+                { model: 'BM 23 29', door: 'F', roundHr: 10, time: 8, pallet: 2, jig: 1 }
+            ],
+            'Line B': [
+                { model: 'TM19/21', door: 'R', roundHr: 12, time: 8, pallet: 1, jig: 1 }
+            ],
+            'Line C': [
+                { model: 'BM 35', door: 'FT', roundHr: 8, time: 8, pallet: 2, jig: 1 }
+            ]
+        };
+
+        let currentLine = 'Line A';
+
+        // ฟังก์ชันสลับ Line
+        function switchLine(lineName) {
+            currentLine = lineName;
+            
+            // เปลี่ยนสไตล์ปุ่ม Tabs
+            document.querySelectorAll('.line-tab-btn').forEach(btn => {
+                btn.className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-indigo-600";
+            });
+            const activeBtn = document.getElementById(`btn-${lineName.replace(' ', '-')}`);
+            activeBtn.className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow";
+
+            // เปลี่ยนหัวข้อตาราง
+            document.getElementById('tableTitle').textContent = `ตารางวางแผนการผลิต: ${lineName}`;
+
+            // Render ข้อมูลใหม่ตาม Line ที่เลือก
+            renderTable();
+        }
+
         // สูตรคำนวณ Plan = Round/HR * Time * Jig
         function calculatePlan(element) {
             const row = element.closest('tr');
@@ -179,38 +177,71 @@
             row.querySelector('.plan-val').textContent = plan.toLocaleString();
         }
 
-        // เพิ่มแถวใหม่
-        function addRow() {
+        // โหลดข้อมูลลงตาราง
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            const items = productionData[currentLine] || [];
+
+            if (items.length === 0) {
+                addRowData({ model: '', door: '', roundHr: 1, time: 1, pallet: 1, jig: 1 });
+            } else {
+                items.forEach(item => {
+                    addRowData(item);
+                });
+            }
+        }
+
+        // เพิ่มแถวข้อมูลลงในตาราง HTML
+        function addRowData(data) {
             const tbody = document.getElementById('tableBody');
             const newRow = document.createElement('tr');
             newRow.className = "hover:bg-gray-50/80 transition";
             
+            const planVal = (data.roundHr || 0) * (data.time || 0) * (data.jig || 0);
+
             newRow.innerHTML = `
-                <td class="p-3">
-                    <select class="line-select w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-gray-800">
-                        <option value="Line A">Line A</option>
-                        <option value="Line B">Line B</option>
-                        <option value="Line C">Line C</option>
-                    </select>
-                </td>
-                <td class="p-3 w-64">
+                <td class="p-3 w-72">
                     <select class="searchable-model w-full"></select>
                 </td>
-                <td class="p-3 w-44">
+                <td class="p-3 w-48">
                     <select class="searchable-door w-full"></select>
                 </td>
-                <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="1" min="0" oninput="calculatePlan(this)"></td>
-                <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="1" min="0" oninput="calculatePlan(this)"></td>
-                <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="1" min="0"></td>
-                <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="1" min="0" oninput="calculatePlan(this)"></td>
-                <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">1</td>
+                <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}" min="0"></td>
+                <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" min="0" oninput="calculatePlan(this)"></td>
+                <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
                 <td class="p-3 text-center">
                     <button onclick="deleteRow(this)" class="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1.5 rounded-lg transition font-medium">ลบ</button>
                 </td>
             `;
             
             tbody.appendChild(newRow);
-            initSelectPlugins(newRow);
+
+            // Set ค่าเริ่มต้นให้ Select หลังจากสร้าง DOM แล้ว
+            const modelSelect = newRow.querySelector('.searchable-model');
+            const doorSelect = newRow.querySelector('.searchable-door');
+
+            const modelTs = new TomSelect(modelSelect, {
+                options: modelOptions,
+                create: true,
+                placeholder: 'ค้นหาหรือเลือก Model...'
+            });
+            if(data.model) modelTs.setValue(data.model);
+
+            const doorTs = new TomSelect(doorSelect, {
+                options: doorOptions,
+                create: true,
+                placeholder: 'เลือก Door...'
+            });
+            if(data.door) doorTs.setValue(data.door);
+        }
+
+        // ปุ่มกดเพิ่มแถวใหม่
+        function addRow() {
+            addRowData({ model: '', door: '', roundHr: 1, time: 1, pallet: 1, jig: 1 });
         }
 
         // ลบแถว
@@ -223,51 +254,29 @@
             }
         }
 
-        // เปิดใช้งาน Tom Select (Searchable)
-        function initSelectPlugins(scope = document) {
-            scope.querySelectorAll('.searchable-model').forEach(el => {
-                if (!el.tomselect) {
-                    new TomSelect(el, {
-                        options: modelOptions,
-                        create: true,
-                        placeholder: 'ค้นหาหรือเลือก Model...'
-                    });
-                }
-            });
-
-            scope.querySelectorAll('.searchable-door').forEach(el => {
-                if (!el.tomselect) {
-                    new TomSelect(el, {
-                        options: doorOptions,
-                        create: true,
-                        placeholder: 'เลือก Door...'
-                    });
-                }
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            initSelectPlugins();
+            renderTable();
         });
 
-        // จำลองการกดปุ่มบันทึกข้อมูล
+        // เก็บรวบรวมข้อมูลทั้งหมดเพื่อบันทึก
         function saveData() {
             const rows = document.querySelectorAll('#tableBody tr');
-            const data = [];
+            const currentRowsData = [];
+            
             rows.forEach(row => {
-                data.push({
-                    line: row.querySelector('.line-select').value,
+                currentRowsData.push({
                     model: row.querySelector('.searchable-model').value,
                     door: row.querySelector('.searchable-door').value,
-                    roundHr: row.querySelector('.round-hr').value,
-                    time: row.querySelector('.time-val').value,
-                    pallet: row.querySelector('.pallet').value,
-                    jig: row.querySelector('.jig').value,
-                    plan: row.querySelector('.plan-val').textContent
+                    roundHr: parseFloat(row.querySelector('.round-hr').value) || 0,
+                    time: parseFloat(row.querySelector('.time-val').value) || 0,
+                    pallet: parseFloat(row.querySelector('.pallet').value) || 0,
+                    jig: parseFloat(row.querySelector('.jig').value) || 0
                 });
             });
-            console.log("Production Plan Data (Light Mode):", data);
-            alert("บันทึกข้อมูลสำเร็จเรียบร้อยแล้ว!");
+
+            productionData[currentLine] = currentRowsData;
+            console.log("Updated Production Plan Data:", productionData);
+            alert(`บันทึกข้อมูลแผนผลิตของ ${currentLine} สำเร็จเรียบร้อย!`);
         }
     </script>
 </body>
