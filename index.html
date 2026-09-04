@@ -10,6 +10,7 @@
         body { background-color: #f3f4f6; color: #1f2937; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .sidebar-gradient { background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); }
         .custom-card { background-color: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        input[readonly] { background-color: #f9fafb; color: #4b5563; cursor: not-allowed; }
     </style>
 </head>
 <body class="flex min-h-screen">
@@ -81,19 +82,18 @@
                     <thead>
                         <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
                             <th colspan="5" class="p-3 border-r border-gray-300 bg-blue-100 text-blue-900 font-bold">REFRIGERATOR</th>
-                            <th colspan="7" class="p-3 bg-emerald-100 text-emerald-900 font-bold">DOOR</th>
+                            <th colspan="6" class="p-3 bg-emerald-100 text-emerald-900 font-bold">DOOR</th>
                         </tr>
                         <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-xs">
                             <th class="p-2.5 border-r">code</th>
+                            <th class="p-2.5 border-r bg-blue-50/50">plan quantity</th>
                             <th class="p-2.5 border-r">model</th>
                             <th class="p-2.5 border-r">platform</th>
                             <th class="p-2.5 border-r">colour</th>
-                            <th class="p-2.5 border-r bg-blue-50/50">plan quantity</th>
                             <th class="p-2.5 border-r">model</th>
                             <th class="p-2.5 border-r">colour</th>
                             <th class="p-2.5 border-r">type</th>
                             <th class="p-2.5 border-r bg-emerald-50/50">total doors needed</th>
-                            <th class="p-2.5 border-r">stock</th>
                             <th class="p-2.5 border-r font-bold text-indigo-600">production required</th>
                             <th class="p-2.5 text-center">line</th>
                         </tr>
@@ -154,7 +154,6 @@
 
         function addRow() { addRowData({ model: 'New Model', door: 'R' }); }
 
-        // --- ฟังก์ชันดึงข้อมูลจาก Supabase ตาม mapping ที่กำหนด ---
         async function fetchMasterData(codeVal) {
             try {
                 const { data, error } = await supabaseClient
@@ -192,7 +191,6 @@
             }
             calcDoorReq(row.querySelector('.plan-qty'));
 
-            // กรณีมีหลาย Type แยกแถวให้อัตโนมัติ
             if (matchedRecords.length > 1) {
                 const tbody = document.getElementById('doorReqTableBody');
                 const currentPlanQty = row.querySelector('.plan-qty').value;
@@ -203,18 +201,17 @@
                     newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
                     newRow.innerHTML = `
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}"></td>
                         <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${currentPlanQty}" oninput="calcDoorReq(this)"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || ''}"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.door_color || ''}"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.door_color || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}" readonly></td>
                         <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
-                        <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="0" oninput="calcDoorReq(this)"></td>
                         <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                         <td class="p-2 flex items-center justify-center gap-1">
-                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'Line A'}">
+                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'Line A'}" readonly>
                             <button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                         </td>
                     `;
@@ -284,18 +281,17 @@
             newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
             newRow.innerHTML = `
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}"></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}"></td>
                 <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty || 10}" oninput="calcDoorReq(this)"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.door_model || ''}"></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.door_color || ''}"></td>
-                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.door_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.door_color || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}" readonly></td>
                 <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
-                <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="${prefill.stock || 0}" oninput="calcDoorReq(this)"></td>
                 <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                 <td class="p-2 flex items-center justify-center gap-1">
-                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'Line A'}">
+                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'Line A'}" readonly>
                     <button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                 </td>
             `;
@@ -306,10 +302,8 @@
         function calcDoorReq(element) {
             const row = element.closest('tr');
             const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
-            const stock = parseFloat(row.querySelector('.stock-qty').value) || 0;
             const totalNeeded = planQty; 
-            let prodRequired = totalNeeded - stock;
-            if(prodRequired < 0) prodRequired = 0;
+            const prodRequired = totalNeeded;
 
             row.querySelector('.total-needed').textContent = totalNeeded.toLocaleString();
             row.querySelector('.prod-required').textContent = prodRequired.toLocaleString();
