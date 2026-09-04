@@ -105,29 +105,36 @@
                 </div>
             </div>
 
-            <div class="custom-card rounded-2xl p-6 shadow-lg overflow-x-auto">
-                <table id="doorReqTable" class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
-                            <th colspan="5" class="p-3 border-r border-gray-300 bg-blue-100 text-blue-900 font-bold">REFRIGERATOR</th>
-                            <th colspan="6" class="p-3 bg-emerald-100 text-emerald-900 font-bold">DOOR</th>
-                        </tr>
-                        <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-xs">
-                            <th class="p-2.5 border-r">code</th>
-                            <th class="p-2.5 border-r bg-blue-50/50">plan quantity</th>
-                            <th class="p-2.5 border-r">model</th>
-                            <th class="p-2.5 border-r">platform</th>
-                            <th class="p-2.5 border-r">colour</th>
-                            <th class="p-2.5 border-r">model</th>
-                            <th class="p-2.5 border-r">colour</th>
-                            <th class="p-2.5 border-r">type</th>
-                            <th class="p-2.5 border-r bg-emerald-50/50">total doors needed</th>
-                            <th class="p-2.5 border-r font-bold text-indigo-600">production required</th>
-                            <th class="p-2.5 text-center">line</th>
-                        </tr>
-                    </thead>
-                    <tbody id="doorReqTableBody" class="divide-y divide-gray-100"></tbody>
-                </table>
+            <div class="custom-card rounded-2xl p-6 shadow-lg">
+                <div class="overflow-x-auto mb-4">
+                    <table id="doorReqTable" class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th colspan="5" class="p-3 border-r border-gray-300 bg-blue-100 text-blue-900 font-bold">REFRIGERATOR</th>
+                                <th colspan="6" class="p-3 bg-emerald-100 text-emerald-900 font-bold">DOOR</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-xs">
+                                <th class="p-2.5 border-r">code</th>
+                                <th class="p-2.5 border-r bg-blue-50/50">plan quantity</th>
+                                <th class="p-2.5 border-r">model</th>
+                                <th class="p-2.5 border-r">platform</th>
+                                <th class="p-2.5 border-r">colour</th>
+                                <th class="p-2.5 border-r">model</th>
+                                <th class="p-2.5 border-r">colour</th>
+                                <th class="p-2.5 border-r">type</th>
+                                <th class="p-2.5 border-r bg-emerald-50/50">total doors needed</th>
+                                <th class="p-2.5 border-r font-bold text-indigo-600">production required</th>
+                                <th class="p-2.5 text-center">line</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doorReqTableBody" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+                <!-- ปุ่มเพิ่มแถวว่างด้านล่างตาราง -->
+                <button onclick="addDoorRequirementRow()" class="w-full py-3 border-2 border-dashed border-indigo-300 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+                    + เพิ่มแถวว่างสำหรับกรอกหรือวางข้อมูล
+                </button>
             </div>
         </div>
 
@@ -149,6 +156,9 @@
             } else if(tabName === 'doors') {
                 document.getElementById('view-doors').classList.remove('hidden');
                 if(document.getElementById('doorReqTableBody').children.length === 0) {
+                    // เปิดหน้ามาให้มีแถวว่างเริ่มต้น 3 แถว
+                    addDoorRequirementRow();
+                    addDoorRequirementRow();
                     addDoorRequirementRow();
                 }
             }
