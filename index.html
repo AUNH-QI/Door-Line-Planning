@@ -77,6 +77,34 @@
                 <button onclick="addDoorRequirementRow()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md">+ เพิ่มรายการ</button>
             </div>
 
+            <!-- KPI Cards Section -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+                <div class="custom-card rounded-xl p-4 border-l-4 border-blue-500">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan REF</p>
+                    <p id="kpi-plan-ref" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
+                </div>
+                <div class="custom-card rounded-xl p-4 border-l-4 border-emerald-500">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan DOOR</p>
+                    <p id="kpi-plan-door" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+                </div>
+                <div class="custom-card rounded-xl p-4 border-l-4 border-indigo-500">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">A-Door</p>
+                    <p id="kpi-a-door" class="text-2xl font-extrabold text-indigo-600 mt-1">0</p>
+                </div>
+                <div class="custom-card rounded-xl p-4 border-l-4 border-purple-500">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">B-Door</p>
+                    <p id="kpi-b-door" class="text-2xl font-extrabold text-purple-600 mt-1">0</p>
+                </div>
+                <div class="custom-card rounded-xl p-4 border-l-4 border-amber-500">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">C-Door</p>
+                    <p id="kpi-c-door" class="text-2xl font-extrabold text-amber-600 mt-1">0</p>
+                </div>
+                <div class="custom-card rounded-xl p-4 border-l-4 border-rose-500">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">DND</p>
+                    <p id="kpi-dnd" class="text-2xl font-extrabold text-rose-600 mt-1">0</p>
+                </div>
+            </div>
+
             <div class="custom-card rounded-2xl p-6 shadow-lg overflow-x-auto">
                 <table id="doorReqTable" class="w-full text-left border-collapse text-sm">
                     <thead>
@@ -212,13 +240,14 @@
                         <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                         <td class="p-2 flex items-center justify-center gap-1">
                             <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'Line A'}" readonly>
-                            <button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
+                            <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                         </td>
                     `;
                     tbody.insertBefore(newRow, row.nextSibling);
                     calcDoorReq(newRow.querySelector('.plan-qty'));
                 }
             }
+            updateKPIs();
         }
 
         async function handleCodeInput(event, inputElement) {
@@ -292,7 +321,7 @@
                 <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                 <td class="p-2 flex items-center justify-center gap-1">
                     <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'Line A'}" readonly>
-                    <button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
+                    <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                 </td>
             `;
             tbody.appendChild(newRow);
@@ -307,6 +336,43 @@
 
             row.querySelector('.total-needed').textContent = totalNeeded.toLocaleString();
             row.querySelector('.prod-required').textContent = prodRequired.toLocaleString();
+            updateKPIs();
+        }
+
+        function updateKPIs() {
+            let totalPlanRef = 0;
+            let totalPlanDoor = 0;
+            let aDoor = 0;
+            let bDoor = 0;
+            let cDoor = 0;
+            let dnd = 0;
+
+            const rows = document.querySelectorAll('.door-req-row');
+            rows.forEach(row => {
+                const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
+                const prodReq = parseFloat(row.querySelector('.prod-required').textContent.replace(/,/g, '')) || 0;
+                const line = (row.querySelector('.door-line').value || '').trim().toLowerCase();
+
+                totalPlanRef += planQty;
+                totalPlanDoor += prodReq;
+
+                if (line === 'line a' || line === 'a') {
+                    aDoor += prodReq;
+                } else if (line === 'line b' || line === 'b') {
+                    bDoor += prodReq;
+                } else if (line === 'line c' || line === 'c') {
+                    cDoor += prodReq;
+                } else if (line === 'dnd') {
+                    dnd += prodReq;
+                }
+            });
+
+            document.getElementById('kpi-plan-ref').textContent = totalPlanRef.toLocaleString();
+            document.getElementById('kpi-plan-door').textContent = totalPlanDoor.toLocaleString();
+            document.getElementById('kpi-a-door').textContent = aDoor.toLocaleString();
+            document.getElementById('kpi-b-door').textContent = bDoor.toLocaleString();
+            document.getElementById('kpi-c-door').textContent = cDoor.toLocaleString();
+            document.getElementById('kpi-dnd').textContent = dnd.toLocaleString();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
