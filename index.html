@@ -69,39 +69,39 @@
 
         <!-- View: จำนวนประตูที่ต้องผลิต -->
         <div id="view-doors" class="view-section hidden">
-            <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
+            <!-- Header & KPI Cards Inline Section -->
+            <div class="custom-card rounded-2xl p-6 mb-8 flex flex-col lg:flex-row justify-between items-center gap-6">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full">REQUIREMENT CALCULATION</span>
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">จำนวนประตูที่ต้องผลิต</h1>
                 </div>
-                <button onclick="addDoorRequirementRow()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md">+ เพิ่มรายการ</button>
-            </div>
 
-            <!-- KPI Cards Section -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-                <div class="custom-card rounded-xl p-4 border-l-4 border-blue-500">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan REF</p>
-                    <p id="kpi-plan-ref" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
-                </div>
-                <div class="custom-card rounded-xl p-4 border-l-4 border-emerald-500">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan DOOR</p>
-                    <p id="kpi-plan-door" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
-                </div>
-                <div class="custom-card rounded-xl p-4 border-l-4 border-indigo-500">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">A-Door</p>
-                    <p id="kpi-a-door" class="text-2xl font-extrabold text-indigo-600 mt-1">0</p>
-                </div>
-                <div class="custom-card rounded-xl p-4 border-l-4 border-purple-500">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">B-Door</p>
-                    <p id="kpi-b-door" class="text-2xl font-extrabold text-purple-600 mt-1">0</p>
-                </div>
-                <div class="custom-card rounded-xl p-4 border-l-4 border-amber-500">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">C-Door</p>
-                    <p id="kpi-c-door" class="text-2xl font-extrabold text-amber-600 mt-1">0</p>
-                </div>
-                <div class="custom-card rounded-xl p-4 border-l-4 border-rose-500">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">DND</p>
-                    <p id="kpi-dnd" class="text-2xl font-extrabold text-rose-600 mt-1">0</p>
+                <!-- KPI Cards Inline -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 w-full lg:w-auto">
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-blue-500 text-center lg:text-left min-w-[100px]">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan REF</p>
+                        <p id="kpi-plan-ref" class="text-xl font-extrabold text-gray-800 mt-0.5">0</p>
+                    </div>
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-emerald-500 text-center lg:text-left min-w-[100px]">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan DOOR</p>
+                        <p id="kpi-plan-door" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
+                    </div>
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-indigo-500 text-center lg:text-left min-w-[100px]">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">A-Door</p>
+                        <p id="kpi-a-door" class="text-xl font-extrabold text-indigo-600 mt-0.5">0</p>
+                    </div>
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-purple-500 text-center lg:text-left min-w-[100px]">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">B-Door</p>
+                        <p id="kpi-b-door" class="text-xl font-extrabold text-purple-600 mt-0.5">0</p>
+                    </div>
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-amber-500 text-center lg:text-left min-w-[100px]">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">C-Door</p>
+                        <p id="kpi-c-door" class="text-xl font-extrabold text-amber-600 mt-0.5">0</p>
+                    </div>
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-rose-500 text-center lg:text-left min-w-[100px]">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">DND</p>
+                        <p id="kpi-dnd" class="text-xl font-extrabold text-rose-600 mt-0.5">0</p>
+                    </div>
                 </div>
             </div>
 
