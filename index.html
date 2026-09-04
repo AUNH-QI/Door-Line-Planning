@@ -104,7 +104,7 @@
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">จำนวนประตูที่ต้องผลิต</h1>
                 </div>
                 <div class="flex gap-3">
-                    <span class="text-xs text-gray-500 self-center">*รองรับการ Copy แถวจาก Excel มาวางที่ช่อง Code ได้ทันที</span>
+                    <span class="text-xs text-gray-500 self-center">*รองรับการ Copy ข้อมูล 2 คอลัมน์ (Code + Plan Quantity) หรือแบบฟอร์มตารางจาก Excel มาวางได้ทันที</span>
                     <button onclick="addDoorRequirementRow()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
                         <span>+ เพิ่มรายการ</span>
                     </button>
@@ -149,7 +149,6 @@
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // รายการมาตรฐานเดิม
         const lineAModels = [
             { model: "620 550 หน้าเรียบ", door: "R" }, { model: "620 550 ก๊อกน้ำ", door: "R" }, { model: "636", door: "F" },
             { model: "520 หน้าเรียบ", door: "RR" }, { model: "520 ก๊อกน้ำ", door: "RR" }, { model: "520", door: "RL" },
@@ -243,38 +242,117 @@
             addRowData({ model: 'New Model', door: 'R', roundHr: 10, time: 8, pallet: 2, jig: 1 });
         }
 
-        // --- ส่วนจัดการหน้า "จำนวนประตูที่ต้องผลิต" พร้อมเชื่อมต่อ Supabase ---
+        // --- ส่วนจัดการหน้า "จำนวนประตูที่ต้องผลิต" พร้อมดึงข้อมูลแบบ Flexible Lookup ---
 
         async function fetchRefrigeratorData(queryField, value) {
             try {
-                const { data, error } = await supabaseClient
-                    .from('door_model') // ตารางใน Supabase
+                // ค้นหาแบบตรงตัวก่อน
+                let { data, error } = await supabaseClient
+                    .from('door_model')
                     .select('*')
-                    .eq(queryField, value)
-                    .limit(1);
+                    .ilike(queryField, value);
                 
                 if (error) throw error;
                 if (data && data.length > 0) {
-                    return data[0];
+                    return data;
                 }
             } catch (err) {
                 console.error("Error fetching from Supabase:", err);
             }
-            return null;
+            return [];
         }
 
-        async function fetchAllTypesForModel(modelName, codeVal) {
-            try {
-                let query = supabaseClient.from('door_model').select('*');
-                if (codeVal) query = query.eq('code', codeVal);
-                else if (modelName) query = query.eq('model', modelName);
+        async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
+            if (!matchedRecords || matchedRecords.length === 0) return;
 
-                const { data, error } = await query;
-                if (error) throw error;
-                return data || [];
-            } catch (err) {
-                console.error("Error fetching types:", err);
-                return [];
+            // ใช้เรคคอร์ดแรกเป็นตัวเติมข้อมูลหลักของ Refrigerator
+            const primary = matchedRecords[0];
+            row.querySelector('.ref-code').value = primary.code || '';
+            row.querySelector('.ref-model').value = primary.model || '';
+            row.querySelector('.ref-platform').value = primary.platform || '';
+            row.querySelector('.ref-colour').value = primary.colour || '';
+            row.querySelector('.door-model').value = primary.door_model || primary.model || '';
+            row.querySelector('.door-colour').value = primary.colour || '';
+            row.querySelector('.door-type').value = primary.type || 'RR';
+            row.querySelector('.door-line').value = primary.line || 'Line A';
+
+            if (specifiedPlanQty !== null) {
+                row.querySelector('.plan-qty').value = specifiedPlanQty;
+            }
+            calcDoorReq(row.querySelector('.plan-qty'));
+
+            // หากมีหลาย Type (เช่น RR, RL, FR, FL สำหรับ Code เดียวกัน) ให้สร้างแถวเพิ่มสำหรับ Type ที่เหลือ
+            if (matchedRecords.length > 1) {
+                const tbody = document.getElementById('doorReqTableBody');
+                const currentPlanQty = row.querySelector('.plan-qty').value;
+
+                for (let i = 1; i < matchedRecords.length; i++) {
+                    const rec = matchedRecords[i];
+                    const newRow = document.createElement('tr');
+                    newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
+                    newRow.innerHTML = `
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.code || ''}" onblur="handleRefrigeratorInput(this, 'code')" onpaste="handleExcelPaste(event, this, 'code')"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.model || ''}" onblur="handleRefrigeratorInput(this, 'model')" onpaste="handleExcelPaste(event, this, 'model')"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.platform || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.colour || ''}"></td>
+                        <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${currentPlanQty}" oninput="calcDoorReq(this)"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || rec.model || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.colour || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.type || 'RR'}"></td>
+                        <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
+                        <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="0" oninput="calcDoorReq(this)"></td>
+                        <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
+                        <td class="p-2 flex items-center justify-center gap-1">
+                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'Line A'}">
+                            <button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
+                        </td>
+                    `;
+                    tbody.insertBefore(newRow, row.nextSibling);
+                    calcDoorReq(newRow.querySelector('.plan-qty'));
+                }
+            }
+        }
+
+        async function handleRefrigeratorInput(inputElement, fieldType) {
+            const row = inputElement.closest('tr');
+            const val = inputElement.value.trim();
+            if (!val) return;
+
+            const records = await fetchRefrigeratorData(fieldType, val);
+            if (records.length > 0) {
+                await populateRowData(row, records);
+            }
+        }
+
+        // รองรับการ Copy แถวหรือข้อมูลตารางจาก Excel มาวาง (รองรับทั้งแบบวางช่อง Code เดี่ยว, หรือวาง 2 คอลัมน์ [Code, Plan Qty] หรือแบบหลายคอลัมน์)
+        async function handleExcelPaste(event, inputElement, fieldType) {
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedData = clipboardData.getData('Text');
+            if (pastedData.includes('\t') || pastedData.includes('\n')) {
+                event.preventDefault();
+                const lines = pastedData.split('\n').filter(r => r.trim() !== '');
+                let currentRow = inputElement.closest('tr');
+
+                for (let index = 0; index < lines.length; index++) {
+                    const cols = lines[index].split('\t').map(c => c.trim());
+                    const codeVal = cols[0] || '';
+                    const planQtyVal = cols[1] ? parseFloat(cols[1]) : null;
+
+                    if (!codeVal) continue;
+
+                    let targetRow = currentRow;
+                    if (index > 0) {
+                        addDoorRequirementRow();
+                        const allRows = document.querySelectorAll('.door-req-row');
+                        targetRow = allRows[allRows.length - 1];
+                    }
+
+                    targetRow.querySelector('.ref-code').value = codeVal;
+                    const records = await fetchRefrigeratorData('code', codeVal);
+                    if (records.length > 0) {
+                        await populateRowData(targetRow, records, planQtyVal);
+                    }
+                }
             }
         }
 
@@ -303,80 +381,12 @@
             calcDoorReq(newRow.querySelector('.plan-qty'));
         }
 
-        async function handleRefrigeratorInput(inputElement, fieldType) {
-            const row = inputElement.closest('tr');
-            const val = inputElement.value.trim();
-            if (!val) return;
-
-            const matchedData = await fetchRefrigeratorData(fieldType, val);
-            if (matchedData) {
-                row.querySelector('.ref-code').value = matchedData.code || '';
-                row.querySelector('.ref-model').value = matchedData.model || '';
-                row.querySelector('.ref-platform').value = matchedData.platform || '';
-                row.querySelector('.ref-colour').value = matchedData.colour || '';
-                row.querySelector('.door-model').value = matchedData.door_model || matchedData.model || '';
-                row.querySelector('.door-colour').value = matchedData.colour || '';
-                row.querySelector('.door-line').value = matchedData.line || 'Line A';
-
-                // ตรวจสอบ Type หลายตัว (เช่น RR, RL, FR, FL) จาก Supabase
-                const allTypes = await fetchAllTypesForModel(matchedData.model, matchedData.code);
-                if (allTypes.length > 1) {
-                    // แตกแถวเพิ่มสำหรับ Type อื่นๆ
-                    const currentPlanQty = row.querySelector('.plan-qty').value;
-                    row.querySelector('.door-type').value = allTypes[0].type || 'RR';
-                    
-                    for (let i = 1; i < allTypes.length; i++) {
-                        addDoorRequirementRow({
-                            code: matchedData.code,
-                            model: matchedData.model,
-                            platform: matchedData.platform,
-                            colour: matchedData.colour,
-                            planQty: currentPlanQty,
-                            doorModel: allTypes[i].door_model || matchedData.model,
-                            doorColour: matchedData.colour,
-                            type: allTypes[i].type,
-                            stock: 0,
-                            line: allTypes[i].line || matchedData.line || 'Line A'
-                        });
-                    }
-                } else if (allTypes.length === 1) {
-                    row.querySelector('.door-type').value = allTypes[0].type || 'RR';
-                }
-            }
-        }
-
-        // รองรับการ Copy & Paste ข้อมูลหลายแถวจาก Excel / CSV
-        function handleExcelPaste(event, inputElement, fieldType) {
-            const clipboardData = event.clipboardData || window.clipboardData;
-            const pastedData = clipboardData.getData('Text');
-            if (pastedData.includes('\t') || pastedData.includes('\n')) {
-                event.preventDefault();
-                const rows = pastedData.split('\n').filter(r => r.trim() !== '');
-                let currentRow = inputElement.closest('tr');
-
-                rows.forEach(async (rowText, index) => {
-                    const cols = rowText.split('\t');
-                    const val = cols[0] ? cols[0].trim() : '';
-                    if (index > 0) {
-                        addDoorRequirementRow();
-                        const allRows = document.querySelectorAll('.door-req-row');
-                        currentRow = allRows[allRows.length - 1];
-                    }
-                    const targetInput = currentRow.querySelector(`.ref-${fieldType}`);
-                    if (targetInput) {
-                        targetInput.value = val;
-                        await handleRefrigeratorInput(targetInput, fieldType);
-                    }
-                });
-            }
-        }
-
         function calcDoorReq(element) {
             const row = element.closest('tr');
             const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
             const stock = parseFloat(row.querySelector('.stock-qty').value) || 0;
             
-            const totalNeeded = planQty; // ตามสูตร 1 ต่อ 1 ต่อฝา หรือปรับสัดส่วนตามต้องการ
+            const totalNeeded = planQty; 
             let prodRequired = totalNeeded - stock;
             if(prodRequired < 0) prodRequired = 0;
 
@@ -389,7 +399,7 @@
         });
 
         function saveData() {
-            alert(`บันทึกข้อมูลแผนผลิตและเชื่อมต่อฐานข้อมูล Supabase สำเร็จเรียบร้อย!`);
+            alert(`บันทึกข้อมูลแผนผลิตและดึงฐานข้อมูล Supabase สำเร็จเรียบร้อย!`);
         }
     </script>
 </body>
