@@ -111,7 +111,7 @@
                         <thead>
                             <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
                                 <th colspan="5" class="p-3 border-r border-gray-300 bg-blue-100 text-blue-900 font-bold">REFRIGERATOR</th>
-                                <th colspan="6" class="p-3 bg-emerald-100 text-emerald-900 font-bold">DOOR</th>
+                                <th colspan="5" class="p-3 bg-emerald-100 text-emerald-900 font-bold">DOOR</th>
                             </tr>
                             <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-xs">
                                 <th class="p-2.5 border-r">code</th>
@@ -122,8 +122,7 @@
                                 <th class="p-2.5 border-r">model</th>
                                 <th class="p-2.5 border-r">colour</th>
                                 <th class="p-2.5 border-r">type</th>
-                                <th class="p-2.5 border-r bg-emerald-50/50">total doors needed</th>
-                                <th class="p-2.5 border-r font-bold text-indigo-600">production required</th>
+                                <th class="p-2.5 border-r bg-emerald-50/50 font-bold text-indigo-600">total doors needed</th>
                                 <th class="p-2.5 text-center">line</th>
                             </tr>
                         </thead>
@@ -156,7 +155,6 @@
             } else if(tabName === 'doors') {
                 document.getElementById('view-doors').classList.remove('hidden');
                 if(document.getElementById('doorReqTableBody').children.length === 0) {
-                    // เปิดหน้ามาให้มีแถวว่างเริ่มต้น 3 แถว
                     addDoorRequirementRow();
                     addDoorRequirementRow();
                     addDoorRequirementRow();
@@ -249,7 +247,6 @@
                         <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.door_color || ''}" readonly></td>
                         <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}" readonly></td>
                         <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
-                        <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                         <td class="p-2 flex items-center justify-center gap-1">
                             <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'A-Door'}" readonly>
                             <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
@@ -332,7 +329,6 @@
                 <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.door_color || ''}" readonly></td>
                 <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}" readonly></td>
                 <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
-                <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                 <td class="p-2 flex items-center justify-center gap-1">
                     <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'A-Door'}" readonly>
                     <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
@@ -357,12 +353,10 @@
                     
                     const pQty = parseFloat(newVal) || 0;
                     r.querySelector('.total-needed').textContent = pQty.toLocaleString();
-                    r.querySelector('.prod-required').textContent = pQty.toLocaleString();
                 });
             } else {
                 const planQty = parseFloat(newVal) || 0;
                 row.querySelector('.total-needed').textContent = planQty.toLocaleString();
-                row.querySelector('.prod-required').textContent = planQty.toLocaleString();
             }
 
             updateKPIs();
@@ -381,7 +375,7 @@
 
             rows.forEach(row => {
                 const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
-                const prodReq = parseFloat(row.querySelector('.prod-required').textContent.replace(/,/g, '')) || 0;
+                const totalNeeded = parseFloat(row.querySelector('.total-needed').textContent.replace(/,/g, '')) || 0;
                 const line = (row.querySelector('.door-line').value || '').trim().toLowerCase();
                 const groupId = row.getAttribute('data-group') || row;
 
@@ -390,16 +384,16 @@
                     totalPlanRef += planQty;
                 }
 
-                totalPlanDoor += prodReq;
+                totalPlanDoor += totalNeeded;
 
                 if (line.includes('dnd')) {
-                    dnd += prodReq;
+                    dnd += totalNeeded;
                 } else if (line.includes('a')) {
-                    aDoor += prodReq;
+                    aDoor += totalNeeded;
                 } else if (line.includes('b')) {
-                    bDoor += prodReq;
+                    bDoor += totalNeeded;
                 } else if (line.includes('c')) {
-                    cDoor += prodReq;
+                    cDoor += totalNeeded;
                 }
             });
 
