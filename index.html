@@ -203,7 +203,7 @@
         async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
             if (!matchedRecords || matchedRecords.length === 0) return;
 
-            const groupId = 'group_' + Date.now + '_' + Math.random();
+            const groupId = 'group_' + Date.now() + '_' + Math.random();
             row.setAttribute('data-group', groupId);
 
             const primary = matchedRecords[0];
@@ -217,14 +217,12 @@
             row.querySelector('.door-type').value = primary.door_type || '';
             row.querySelector('.door-line').value = primary.line || 'A-Door';
 
-            if (specifiedPlanQty !== null) {
-                row.querySelector('.plan-qty').value = specifiedPlanQty;
-            }
+            let initialPlanQty = specifiedPlanQty !== null ? specifiedPlanQty : (row.querySelector('.plan-qty').value || '');
+            row.querySelector('.plan-qty').value = initialPlanQty;
             calcDoorReq(row.querySelector('.plan-qty'));
 
             if (matchedRecords.length > 1) {
                 const tbody = document.getElementById('doorReqTableBody');
-                const currentPlanQty = row.querySelector('.plan-qty').value;
 
                 for (let i = 1; i < matchedRecords.length; i++) {
                     const rec = matchedRecords[i];
@@ -233,7 +231,7 @@
                     newRow.setAttribute('data-group', groupId);
                     newRow.innerHTML = `
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
-                        <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${currentPlanQty}" oninput="calcDoorReq(this)"></td>
+                        <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${initialPlanQty}" oninput="calcDoorReq(this)"></td>
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}" readonly></td>
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}" readonly></td>
                         <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}" readonly></td>
@@ -316,7 +314,7 @@
             newRow.setAttribute('data-group', groupId);
             newRow.innerHTML = `
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
-                <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty || 10}" oninput="calcDoorReq(this)"></td>
+                <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty !== undefined ? prefill.planQty : ''}" oninput="calcDoorReq(this)"></td>
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}" readonly></td>
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}" readonly></td>
                 <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}" readonly></td>
@@ -336,12 +334,27 @@
 
         function calcDoorReq(element) {
             const row = element.closest('tr');
-            const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
-            const totalNeeded = planQty; 
-            const prodRequired = totalNeeded;
+            const groupId = row.getAttribute('data-group');
+            const newVal = element.value;
 
-            row.querySelector('.total-needed').textContent = totalNeeded.toLocaleString();
-            row.querySelector('.prod-required').textContent = prodRequired.toLocaleString();
+            if (groupId) {
+                const groupRows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
+                groupRows.forEach(r => {
+                    const input = r.querySelector('.plan-qty');
+                    if (input && input !== element) {
+                        input.value = newVal;
+                    }
+                    
+                    const pQty = parseFloat(newVal) || 0;
+                    r.querySelector('.total-needed').textContent = pQty.toLocaleString();
+                    r.querySelector('.prod-required').textContent = pQty.toLocaleString();
+                });
+            } else {
+                const planQty = parseFloat(newVal) || 0;
+                row.querySelector('.total-needed').textContent = planQty.toLocaleString();
+                row.querySelector('.prod-required').textContent = planQty.toLocaleString();
+            }
+
             updateKPIs();
         }
 
@@ -362,7 +375,6 @@
                 const line = (row.querySelector('.door-line').value || '').trim().toLowerCase();
                 const groupId = row.getAttribute('data-group') || row;
 
-                // นับ Plan REF เฉพาะกลุ่มรายการที่ไม่ซ้ำกัน (ป้องกันการนับซ้ำเมื่อตู้เดียวแยกหลายฝา)
                 if (!processedGroups.has(groupId)) {
                     processedGroups.add(groupId);
                     totalPlanRef += planQty;
