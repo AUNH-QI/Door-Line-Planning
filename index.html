@@ -4,24 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Door Planning - Production Line Management</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body {
-            background-color: #f3f4f6;
-            color: #1f2937;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .sidebar-gradient {
-            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
-        }
-        .custom-card {
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        }
+        body { background-color: #f3f4f6; color: #1f2937; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .sidebar-gradient { background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); }
+        .custom-card { background-color: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
     </style>
 </head>
 <body class="flex min-h-screen">
@@ -33,7 +21,7 @@
         </div>
         <div class="flex flex-col gap-6 w-full items-center">
             <div onclick="switchTab('planning')" id="nav-planning" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
             </div>
             <div onclick="switchTab('doors')" id="nav-doors" class="p-3 bg-white/20 rounded-xl cursor-pointer shadow">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
@@ -46,52 +34,34 @@
         
         <!-- View: Daily Door Planning -->
         <div id="view-planning" class="view-section">
-            <div class="custom-card rounded-2xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">PRODUCTION LINE MANAGEMENT</span>
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">Daily Door Planning</h1>
                 </div>
                 <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-xl border border-gray-200">
                     <button onclick="switchLine('Line A')" id="btn-Line-A" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow">Line A</button>
-                    <button onclick="switchLine('Line B')" id="btn-Line-B" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-indigo-600">Line B</button>
-                    <button onclick="switchLine('Line C')" id="btn-Line-C" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-indigo-600">Line C</button>
+                    <button onclick="switchLine('Line B')" id="btn-Line-B" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600">Line B</button>
+                    <button onclick="switchLine('Line C')" id="btn-Line-C" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600">Line C</button>
                 </div>
             </div>
 
             <div class="custom-card rounded-2xl p-6 shadow-lg">
                 <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h2 id="tableTitle" class="text-xl font-bold text-gray-800">ตารางวางแผนการผลิต: Line A</h2>
-                        <p class="text-sm text-gray-500" id="tableDesc">รายการรุ่นและประตูตามกำหนดการมาตรฐานของ Line A</p>
-                    </div>
-                    <button id="btnAddRow" onclick="addRow()" class="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
-                        <span>+ เพิ่มแถวการผลิต</span>
-                    </button>
+                    <h2 id="tableTitle" class="text-xl font-bold text-gray-800">ตารางวางแผนการผลิต: Line A</h2>
+                    <button onclick="addRow()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md">+ เพิ่มแถวการผลิต</button>
                 </div>
-
                 <div class="overflow-x-auto">
-                    <table id="planningTable" class="w-full text-left border-collapse">
+                    <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-gray-200 text-indigo-600 text-sm bg-gray-50/50">
-                                <th class="p-3.5 rounded-l-xl">Model</th>
-                                <th class="p-3.5">Door</th>
-                                <th class="p-3.5 text-center">Round/HR</th>
-                                <th class="p-3.5 text-center">Time</th>
-                                <th class="p-3.5 text-center">Pallet</th>
-                                <th class="p-3.5 text-center">Jig</th>
-                                <th class="p-3.5 text-center text-indigo-700 font-bold">Plan (Auto)</th>
-                                <th class="p-3.5 text-center rounded-r-xl">Action</th>
+                            <tr class="border-b border-gray-200 text-indigo-600 text-sm bg-gray-50">
+                                <th class="p-3.5">Model</th><th class="p-3.5">Door</th><th class="p-3.5 text-center">Round/HR</th>
+                                <th class="p-3.5 text-center">Time</th><th class="p-3.5 text-center">Pallet</th><th class="p-3.5 text-center">Jig</th>
+                                <th class="p-3.5 text-center text-indigo-700 font-bold">Plan (Auto)</th><th class="p-3.5 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody" class="divide-y divide-gray-100 text-sm">
-                        </tbody>
+                        <tbody id="tableBody" class="divide-y divide-gray-100 text-sm"></tbody>
                     </table>
-                </div>
-
-                <div class="mt-6 flex justify-end">
-                    <button onclick="saveData()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl shadow-md transition flex items-center gap-2">
-                        <span>💾 บันทึกข้อมูลแผนผลิต</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -103,12 +73,7 @@
                     <span class="text-xs font-bold tracking-widest text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full">REQUIREMENT CALCULATION</span>
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">จำนวนประตูที่ต้องผลิต</h1>
                 </div>
-                <div class="flex gap-3">
-                    <span class="text-xs text-gray-500 self-center">*รองรับการ Copy ข้อมูล 2 คอลัมน์ (Code + Plan Quantity) หรือวางจาก Excel ได้ทันที</span>
-                    <button onclick="addDoorRequirementRow()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
-                        <span>+ เพิ่มรายการ</span>
-                    </button>
-                </div>
+                <button onclick="addDoorRequirementRow()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md">+ เพิ่มรายการ</button>
             </div>
 
             <div class="custom-card rounded-2xl p-6 shadow-lg overflow-x-auto">
@@ -133,9 +98,7 @@
                             <th class="p-2.5 text-center">line</th>
                         </tr>
                     </thead>
-                    <tbody id="doorReqTableBody" class="divide-y divide-gray-100">
-                        <!-- แถวเริ่มต้น -->
-                    </tbody>
+                    <tbody id="doorReqTableBody" class="divide-y divide-gray-100"></tbody>
                 </table>
             </div>
         </div>
@@ -143,51 +106,20 @@
     </div>
 
     <script>
-        // ตั้งค่าการเชื่อมต่อ Supabase
         const SUPABASE_URL = 'https://fslgzlowdcxtnxppipdq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzbGd6bG93ZGN4dG54cHBpcGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MTM3MTksImV4cCI6MjEwNDA4OTcxOX0.9PWrY1SKSvMfLPI_S0a3jgvqIxpISzlsR2TlH2oysyo';
-        
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const lineAModels = [
-            { model: "620 550 หน้าเรียบ", door: "R" }, { model: "620 550 ก๊อกน้ำ", door: "R" }, { model: "636", door: "F" },
-            { model: "520 หน้าเรียบ", door: "RR" }, { model: "520 ก๊อกน้ำ", door: "RR" }, { model: "520", door: "RL" },
-            { model: "G 3 320", door: "F" }, { model: "G 3 320", door: "R" }, { model: "G 3 350", door: "F" },
-            { model: "G 3 350", door: "R" }, { model: "T-DOOR US", door: "RR" }, { model: "T-DOOR US", door: "RL" },
-            { model: "T-DOOR US", door: "FR" }, { model: "T-DOOR US", door: "FL" }, { model: "T-DOOR HORIZONTAL เรียบ", door: "RR" },
-            { model: "T-DOOR HORIZONTAL เรียบ", door: "RL" }, { model: "T-DOOR HORIZONTAL เรียบ", door: "FR" }, { model: "T-DOOR HORIZONTAL เรียบ", door: "FL" },
-            { model: "T-DOOR HORIZONTAL ก๊อก", door: "RR" }, { model: "T-DOOR HORIZONTAL ก๊อก", door: "RL" }, { model: "T-DOOR HORIZONTAL ก๊อก", door: "FR" },
-            { model: "T-DOOR HORIZONTAL ก๊อก", door: "FL" }, { model: "TM 1012", door: "F" }, { model: "TM 1012", door: "R" }
-        ];
-
-        const lineBModels = [
-            { model: "EHRT 2070 NL", door: "F" }, { model: "EHRT 2070 NL", door: "R" },
-            { model: "EHRT 2570 NL", door: "F" }, { model: "EHRT 2570 NL", door: "R" },
-            { model: "Door 5.3 Cu.(159) C", door: "R" }, { model: "Door 5.3 Cu.(159) F", door: "R" },
-            { model: "Door - 6.6 Cu.(199) C", door: "R" }, { model: "Door - 6.6 Cu.(199) F", door: "R" }
-        ];
-
-        let productionData = {
-            'Line A': lineAModels.map(item => ({ model: item.model, door: item.door, roundHr: 10, time: 8, pallet: 2, jig: 1 })),
-            'Line B': lineBModels.map(item => ({ model: item.model, door: item.door, roundHr: 10, time: 8, pallet: 2, jig: 1 })),
-            'Line C': [{ model: 'BM 35', door: 'FT', roundHr: 8, time: 8, pallet: 2, jig: 1 }]
-        };
-
+        let productionData = { 'Line A': [], 'Line B': [], 'Line C': [] };
         let currentLine = 'Line A';
 
         function switchTab(tabName) {
             document.getElementById('view-planning').classList.add('hidden');
             document.getElementById('view-doors').classList.add('hidden');
-            
-            document.getElementById('nav-planning').className = "p-3 hover:bg-white/10 rounded-xl cursor-pointer transition";
-            document.getElementById('nav-doors').className = "p-3 hover:bg-white/10 rounded-xl cursor-pointer transition";
-
             if(tabName === 'planning') {
                 document.getElementById('view-planning').classList.remove('hidden');
-                document.getElementById('nav-planning').className = "p-3 bg-white/20 rounded-xl cursor-pointer shadow";
             } else if(tabName === 'doors') {
                 document.getElementById('view-doors').classList.remove('hidden');
-                document.getElementById('nav-doors').className = "p-3 bg-white/20 rounded-xl cursor-pointer shadow";
                 if(document.getElementById('doorReqTableBody').children.length === 0) {
                     addDoorRequirementRow();
                 }
@@ -196,21 +128,7 @@
 
         function switchLine(lineName) {
             currentLine = lineName;
-            document.querySelectorAll('.line-tab-btn').forEach(btn => {
-                btn.className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-indigo-600";
-            });
-            document.getElementById(`btn-${lineName.replace(' ', '-')}`).className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow";
-            document.getElementById('tableTitle').textContent = `ตารางวางแผนการผลิต: ${lineName}`;
             renderTable();
-        }
-
-        function calculatePlan(element) {
-            const row = element.closest('tr');
-            const roundHr = parseFloat(row.querySelector('.round-hr').value) || 0;
-            const time = parseFloat(row.querySelector('.time-val').value) || 0;
-            const jig = parseFloat(row.querySelector('.jig').value) || 0;
-            const plan = roundHr * time * jig;
-            row.querySelector('.plan-val').textContent = plan.toLocaleString();
         }
 
         function renderTable() {
@@ -222,51 +140,44 @@
         function addRowData(data) {
             const tbody = document.getElementById('tableBody');
             const newRow = document.createElement('tr');
-            newRow.className = "hover:bg-gray-50/80 transition";
-            const planVal = (data.roundHr || 0) * (data.time || 0) * (data.jig || 0);
-
             newRow.innerHTML = `
-                <td class="p-3 font-medium text-gray-800">${data.model}</td>
-                <td class="p-3 font-medium text-gray-800">${data.door}</td>
-                <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" oninput="calculatePlan(this)"></td>
-                <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" oninput="calculatePlan(this)"></td>
-                <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}"></td>
-                <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" oninput="calculatePlan(this)"></td>
-                <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
-                <td class="p-3 text-center text-gray-400">-</td>
+                <td class="p-3">${data.model || ''}</td><td class="p-3">${data.door || ''}</td>
+                <td class="p-3 text-center"><input type="number" class="round-hr w-20 border rounded p-1 text-center" value="${data.roundHr || 10}"></td>
+                <td class="p-3 text-center"><input type="number" class="time-val w-20 border rounded p-1 text-center" value="${data.time || 8}"></td>
+                <td class="p-3 text-center"><input type="number" class="pallet w-20 border rounded p-1 text-center" value="${data.pallet || 2}"></td>
+                <td class="p-3 text-center"><input type="number" class="jig w-20 border rounded p-1 text-center" value="${data.jig || 1}"></td>
+                <td class="p-3 font-bold text-indigo-600 text-center plan-val">80</td>
+                <td class="p-3 text-center">-</td>
             `;
             tbody.appendChild(newRow);
         }
 
-        function addRow() {
-            addRowData({ model: 'New Model', door: 'R', roundHr: 10, time: 8, pallet: 2, jig: 1 });
-        }
+        function addRow() { addRowData({ model: 'New Model', door: 'R' }); }
 
-        // --- ส่วนจัดการหน้า "จำนวนประตูที่ต้องผลิต" ดึงข้อมูลจาก production_planning_master ---
-
+        // --- ฟังก์ชันดึงข้อมูลจาก Supabase ตาม mapping ที่กำหนด ---
         async function fetchMasterData(codeVal) {
             try {
-                let { data, error } = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('production_planning_master')
                     .select('*')
-                    .ilike('code', codeVal.trim());
+                    .ilike('fg_code', codeVal.trim());
                 
-                if (error) throw error;
-                if (data && data.length > 0) {
-                    return data;
+                if (error) {
+                    console.error("Supabase Error:", error);
+                    return [];
                 }
+                return data || [];
             } catch (err) {
-                console.error("Error fetching from production_planning_master:", err);
+                console.error("Fetch Exception:", err);
+                return [];
             }
-            return [];
         }
 
         async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
             if (!matchedRecords || matchedRecords.length === 0) return;
 
-            // ใช้เรคคอร์ดแรกเติมข้อมูลหลัก
             const primary = matchedRecords[0];
-            row.querySelector('.ref-code').value = primary.code || '';
+            row.querySelector('.ref-code').value = primary.fg_code || '';
             row.querySelector('.ref-model').value = primary.commercial_model || '';
             row.querySelector('.ref-platform').value = primary.refrigerator_model || '';
             row.querySelector('.ref-colour').value = primary.refrigerator_color || '';
@@ -281,7 +192,7 @@
             }
             calcDoorReq(row.querySelector('.plan-qty'));
 
-            // หาก Code เดียวกันมีหลายแถว/ประเภทประตู ให้สร้างแถวเพิ่มอัตโนมัติ
+            // กรณีมีหลาย Type แยกแถวให้อัตโนมัติ
             if (matchedRecords.length > 1) {
                 const tbody = document.getElementById('doorReqTableBody');
                 const currentPlanQty = row.querySelector('.plan-qty').value;
@@ -291,7 +202,7 @@
                     const newRow = document.createElement('tr');
                     newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
                     newRow.innerHTML = `
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.code || ''}" onblur="handleCodeInput(this)" onpaste="handleExcelPaste(event, this)"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}"></td>
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}"></td>
                         <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}"></td>
@@ -313,10 +224,10 @@
             }
         }
 
-        async function handleCodeInput(inputElement) {
+        async function handleCodeInput(event, inputElement) {
             const row = inputElement.closest('tr');
             const val = inputElement.value.trim();
-            if (!val) return;
+            if (val.length < 3) return;
 
             const records = await fetchMasterData(val);
             if (records.length > 0) {
@@ -324,7 +235,18 @@
             }
         }
 
-        // รองรับการ Copy & Paste ข้อมูลจาก Excel (Code เดี่ยว หรือ [Code, Plan Quantity])
+        async function handleKey(event, inputElement) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const row = inputElement.closest('tr');
+                const val = inputElement.value.trim();
+                const records = await fetchMasterData(val);
+                if (records.length > 0) {
+                    await populateRowData(row, records);
+                }
+            }
+        }
+
         async function handleExcelPaste(event, inputElement) {
             const clipboardData = event.clipboardData || window.clipboardData;
             const pastedData = clipboardData.getData('Text');
@@ -361,7 +283,7 @@
             const newRow = document.createElement('tr');
             newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
             newRow.innerHTML = `
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" onblur="handleCodeInput(this)" onpaste="handleExcelPaste(event, this)"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}"></td>
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}"></td>
                 <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}"></td>
@@ -385,7 +307,6 @@
             const row = element.closest('tr');
             const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
             const stock = parseFloat(row.querySelector('.stock-qty').value) || 0;
-            
             const totalNeeded = planQty; 
             let prodRequired = totalNeeded - stock;
             if(prodRequired < 0) prodRequired = 0;
@@ -396,11 +317,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             switchLine('Line A');
+            switchTab('doors');
         });
-
-        function saveData() {
-            alert(`บันทึกข้อมูลแผนผลิตและดึงฐานข้อมูล production_planning_master สำเร็จเรียบร้อย!`);
-        }
     </script>
 </body>
 </html>
