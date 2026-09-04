@@ -34,7 +34,7 @@
     <div class="flex-1 ml-20 p-8">
         
         <!-- View: Daily Door Planning -->
-        <div id="view-planning" class="view-section">
+        <div id="view-planning" class="view-section hidden">
             <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">PRODUCTION LINE MANAGEMENT</span>
@@ -68,7 +68,7 @@
         </div>
 
         <!-- View: จำนวนประตูที่ต้องผลิต -->
-        <div id="view-doors" class="view-section hidden">
+        <div id="view-doors" class="view-section">
             <!-- Header & KPI Cards Inline Section -->
             <div class="custom-card rounded-2xl p-6 mb-8 flex flex-col lg:flex-row justify-between items-center gap-6">
                 <div>
@@ -115,7 +115,10 @@
                                 <th class="p-3 border-r">DOOR model</th>
                                 <th class="p-3 border-r">colour</th>
                                 <th class="p-3 border-r">type</th>
-                                <th class="p-3 text-indigo-700 font-bold">total doors needed</th>
+                                <th class="p-3 border-r">Line</th>
+                                <th class="p-3 border-r text-amber-700 font-bold">☀️ Day</th>
+                                <th class="p-3 border-r text-indigo-700 font-bold">🌙 Night</th>
+                                <th class="p-3 text-emerald-700 font-bold">total doors needed</th>
                             </tr>
                         </thead>
                         <tbody id="summaryTableBody" class="divide-y divide-gray-100">
@@ -309,7 +312,6 @@
                 event.preventDefault();
                 const lines = pastedData.split('\n').filter(r => r.trim() !== '');
                 
-                // ล้างแถวว่างเริ่มต้นออกก่อนเริ่มวางข้อมูล เพื่อป้องกันแถวว่างเกินมา
                 const allCurrentRows = document.querySelectorAll('.door-req-row');
                 allCurrentRows.forEach(r => {
                     const codeInput = r.querySelector('.ref-code').value.trim();
@@ -413,7 +415,8 @@
             rows.forEach(row => {
                 const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
                 const totalNeeded = parseFloat(row.querySelector('.total-needed').textContent.replace(/,/g, '')) || 0;
-                const line = (row.querySelector('.door-line').value || '').trim().toLowerCase();
+                const line = (row.querySelector('.door-line').value || '').trim();
+                const lineLower = line.toLowerCase();
                 const groupId = row.getAttribute('data-group') || row;
 
                 const doorModel = (row.querySelector('.door-model').value || '').trim();
@@ -421,9 +424,9 @@
                 const doorType = (row.querySelector('.door-type').value || '').trim();
 
                 if (doorModel) {
-                    const key = `${doorModel}_${doorColour}_${doorType}`;
+                    const key = `${doorModel}_${doorColour}_${doorType}_${line}`;
                     if (!summaryMap[key]) {
-                        summaryMap[key] = { model: doorModel, colour: doorColour, type: doorType, total: 0 };
+                        summaryMap[key] = { model: doorModel, colour: doorColour, type: doorType, line: line, total: 0 };
                     }
                     summaryMap[key].total += totalNeeded;
                 }
@@ -435,13 +438,13 @@
 
                 totalPlanDoor += totalNeeded;
 
-                if (line.includes('dnd')) {
+                if (lineLower.includes('dnd')) {
                     dnd += totalNeeded;
-                } else if (line.includes('a')) {
+                } else if (lineLower.includes('a')) {
                     aDoor += totalNeeded;
-                } else if (line.includes('b')) {
+                } else if (lineLower.includes('b')) {
                     bDoor += totalNeeded;
-                } else if (line.includes('c')) {
+                } else if (lineLower.includes('c')) {
                     cDoor += totalNeeded;
                 }
             });
@@ -462,19 +465,25 @@
 
             const keys = Object.keys(summaryMap);
             if (keys.length === 0) {
-                summaryTbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-gray-400">ยังไม่มีข้อมูลสรุป</td></tr>`;
+                summaryTbody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-gray-400">ยังไม่มีข้อมูลสรุป</td></tr>`;
                 return;
             }
 
             keys.forEach(key => {
                 const item = summaryMap[key];
+                const dayVal = item.total / 2;
+                const nightVal = item.total / 2;
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition";
                 tr.innerHTML = `
                     <td class="p-3 border-r font-medium text-gray-800">${item.model}</td>
                     <td class="p-3 border-r text-gray-600">${item.colour}</td>
                     <td class="p-3 border-r text-gray-600">${item.type}</td>
-                    <td class="p-3 font-bold text-indigo-600">${item.total.toLocaleString()}</td>
+                    <td class="p-3 border-r text-gray-700 font-semibold">${item.line}</td>
+                    <td class="p-3 border-r text-amber-600 font-bold">${dayVal % 1 === 0 ? dayVal.toLocaleString() : dayVal.toFixed(1)}</td>
+                    <td class="p-3 border-r text-indigo-600 font-bold">${nightVal % 1 === 0 ? nightVal.toLocaleString() : nightVal.toFixed(1)}</td>
+                    <td class="p-3 font-bold text-emerald-700">${item.total.toLocaleString()}</td>
                 `;
                 summaryTbody.appendChild(tr);
             });
