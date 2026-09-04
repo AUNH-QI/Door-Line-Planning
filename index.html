@@ -6,6 +6,8 @@
     <title>Daily Door Planning - Production Line Management</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             background-color: #f3f4f6;
@@ -42,7 +44,7 @@
     <!-- Main Content Area -->
     <div class="flex-1 ml-20 p-8">
         
-        <!-- View: Daily Door Planning (เดิม) -->
+        <!-- View: Daily Door Planning -->
         <div id="view-planning" class="view-section">
             <div class="custom-card rounded-2xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
@@ -94,16 +96,19 @@
             </div>
         </div>
 
-        <!-- View: จำนวนประตูที่ต้องผลิต (สร้างขึ้นใหม่ตามรูปโครงสร้างที่ระบุ) -->
+        <!-- View: จำนวนประตูที่ต้องผลิต -->
         <div id="view-doors" class="view-section hidden">
             <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full">REQUIREMENT CALCULATION</span>
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">จำนวนประตูที่ต้องผลิต</h1>
                 </div>
-                <button onclick="addDoorRequirementRow()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
-                    <span>+ เพิ่มรายการ</span>
-                </button>
+                <div class="flex gap-3">
+                    <span class="text-xs text-gray-500 self-center">*รองรับการ Copy แถวจาก Excel มาวางที่ช่อง Code ได้ทันที</span>
+                    <button onclick="addDoorRequirementRow()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
+                        <span>+ เพิ่มรายการ</span>
+                    </button>
+                </div>
             </div>
 
             <div class="custom-card rounded-2xl p-6 shadow-lg overflow-x-auto">
@@ -129,21 +134,7 @@
                         </tr>
                     </thead>
                     <tbody id="doorReqTableBody" class="divide-y divide-gray-100">
-                        <!-- แถวตัวอย่างข้อมูลตามโครงสร้าง -->
-                        <tr class="hover:bg-gray-50 transition text-center">
-                            <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value="B00UX6E00"></td>
-                            <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value="BM29"></td>
-                            <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value="PGE29"></td>
-                            <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs" value="Silver"></td>
-                            <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="100" oninput="calcDoorReq(this)"></td>
-                            <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value="BM 23 29"></td>
-                            <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs" value="Silver"></td>
-                            <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs" value="RR"></td>
-                            <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">100</td>
-                            <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="20" oninput="calcDoorReq(this)"></td>
-                            <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">80</td>
-                            <td class="p-2"><input type="text" class="w-16 p-1 border rounded text-center text-xs" value="Line A"></td>
-                        </tr>
+                        <!-- แถวเริ่มต้น -->
                     </tbody>
                 </table>
             </div>
@@ -152,57 +143,29 @@
     </div>
 
     <script>
-        // รายการ Model และ Door ของ Line A
+        // ตั้งค่าการเชื่อมต่อ Supabase
+        const SUPABASE_URL = 'https://fslgzlowdcxtnxppipdq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzbGd6bG93ZGN4dG54cHBpcGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MTM3MTksImV4cCI6MjEwNDA4OTcxOX0.9PWrY1SKSvMfLPI_S0a3jgvqIxpISzlsR2TlH2oysyo';
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // รายการมาตรฐานเดิม
         const lineAModels = [
-            { model: "620 550 หน้าเรียบ", door: "R" },
-            { model: "620 550 ก๊อกน้ำ", door: "R" },
-            { model: "636", door: "F" },
-            { model: "520 หน้าเรียบ", door: "RR" },
-            { model: "520 ก๊อกน้ำ", door: "RR" },
-            { model: "520", door: "RL" },
-            { model: "G 3 320", door: "F" },
-            { model: "G 3 320", door: "R" },
-            { model: "G 3 350", door: "F" },
-            { model: "G 3 350", door: "R" },
-            { model: "T-DOOR US", door: "RR" },
-            { model: "T-DOOR US", door: "RL" },
-            { model: "T-DOOR US", door: "FR" },
-            { model: "T-DOOR US", door: "FL" },
-            { model: "T-DOOR HORIZONTAL เรียบ", door: "RR" },
-            { model: "T-DOOR HORIZONTAL เรียบ", door: "RL" },
-            { model: "T-DOOR HORIZONTAL เรียบ", door: "FR" },
-            { model: "T-DOOR HORIZONTAL เรียบ", door: "FL" },
-            { model: "T-DOOR HORIZONTAL ก๊อก", door: "RR" },
-            { model: "T-DOOR HORIZONTAL ก๊อก", door: "RL" },
-            { model: "T-DOOR HORIZONTAL ก๊อก", door: "FR" },
-            { model: "T-DOOR HORIZONTAL ก๊อก", door: "FL" },
-            { model: "TM 1012", door: "F" },
-            { model: "TM 1012", door: "R" }
+            { model: "620 550 หน้าเรียบ", door: "R" }, { model: "620 550 ก๊อกน้ำ", door: "R" }, { model: "636", door: "F" },
+            { model: "520 หน้าเรียบ", door: "RR" }, { model: "520 ก๊อกน้ำ", door: "RR" }, { model: "520", door: "RL" },
+            { model: "G 3 320", door: "F" }, { model: "G 3 320", door: "R" }, { model: "G 3 350", door: "F" },
+            { model: "G 3 350", door: "R" }, { model: "T-DOOR US", door: "RR" }, { model: "T-DOOR US", door: "RL" },
+            { model: "T-DOOR US", door: "FR" }, { model: "T-DOOR US", door: "FL" }, { model: "T-DOOR HORIZONTAL เรียบ", door: "RR" },
+            { model: "T-DOOR HORIZONTAL เรียบ", door: "RL" }, { model: "T-DOOR HORIZONTAL เรียบ", door: "FR" }, { model: "T-DOOR HORIZONTAL เรียบ", door: "FL" },
+            { model: "T-DOOR HORIZONTAL ก๊อก", door: "RR" }, { model: "T-DOOR HORIZONTAL ก๊อก", door: "RL" }, { model: "T-DOOR HORIZONTAL ก๊อก", door: "FR" },
+            { model: "T-DOOR HORIZONTAL ก๊อก", door: "FL" }, { model: "TM 1012", door: "F" }, { model: "TM 1012", door: "R" }
         ];
 
         const lineBModels = [
-            { model: "EHRT 2070 NL", door: "F" },
-            { model: "EHRT 2070 NL", door: "R" },
-            { model: "EHRT 2570 NL", door: "F" },
-            { model: "EHRT 2570 NL", door: "R" },
-            { model: "Door 5.3 Cu.(159) C", door: "R" },
-            { model: "Door 5.3 Cu.(159) F", door: "R" },
-            { model: "Door - 6.6 Cu.(199) C", door: "R" },
-            { model: "Door - 6.6 Cu.(199) F", door: "R" }
-        ];
-
-        const modelOptions = [
-            {value: 'BM 23 29', text: 'BM 23 29'},
-            {value: 'TM19/21', text: 'TM19/21'},
-            {value: 'BM 35', text: 'BM 35'},
-            {value: 'TM25', text: 'TM25'}
-        ];
-
-        const doorOptions = [
-            {value: 'F', text: 'F'}, {value: 'R', text: 'R'},
-            {value: 'RR', text: 'RR'}, {value: 'RL', text: 'RL'},
-            {value: 'FT', text: 'FT'}, {value: 'FB', text: 'FB'},
-            {value: 'FR', text: 'FR'}, {value: 'FL', text: 'FL'}
+            { model: "EHRT 2070 NL", door: "F" }, { model: "EHRT 2070 NL", door: "R" },
+            { model: "EHRT 2570 NL", door: "F" }, { model: "EHRT 2570 NL", door: "R" },
+            { model: "Door 5.3 Cu.(159) C", door: "R" }, { model: "Door 5.3 Cu.(159) F", door: "R" },
+            { model: "Door - 6.6 Cu.(199) C", door: "R" }, { model: "Door - 6.6 Cu.(199) F", door: "R" }
         ];
 
         let productionData = {
@@ -213,7 +176,6 @@
 
         let currentLine = 'Line A';
 
-        // สลับระหว่างหน้า View ต่างๆ (Planning และ จำนวนประตูที่ต้องผลิต)
         function switchTab(tabName) {
             document.getElementById('view-planning').classList.add('hidden');
             document.getElementById('view-doors').classList.add('hidden');
@@ -227,6 +189,9 @@
             } else if(tabName === 'doors') {
                 document.getElementById('view-doors').classList.remove('hidden');
                 document.getElementById('nav-doors').className = "p-3 bg-white/20 rounded-xl cursor-pointer shadow";
+                if(document.getElementById('doorReqTableBody').children.length === 0) {
+                    addDoorRequirementRow();
+                }
             }
         }
 
@@ -237,15 +202,6 @@
             });
             document.getElementById(`btn-${lineName.replace(' ', '-')}`).className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow";
             document.getElementById('tableTitle').textContent = `ตารางวางแผนการผลิต: ${lineName}`;
-            
-            const btnAdd = document.getElementById('btnAddRow');
-            if (lineName === 'Line A' || lineName === 'Line B') {
-                btnAdd.style.display = 'none';
-                document.getElementById('tableDesc').textContent = `รายการรุ่นและประตูตามกำหนดการมาตรฐานของ ${lineName}`;
-            } else {
-                btnAdd.style.display = 'flex';
-                document.getElementById('tableDesc').textContent = 'ค้นหารุ่นฝาตู้เย็นและคำนวณแผนอัตโนมัติประจำไลน์';
-            }
             renderTable();
         }
 
@@ -261,8 +217,7 @@
         function renderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
-            const items = productionData[currentLine] || [];
-            items.forEach(item => addRowData(item));
+            (productionData[currentLine] || []).forEach(item => addRowData(item));
         }
 
         function addRowData(data) {
@@ -271,54 +226,157 @@
             newRow.className = "hover:bg-gray-50/80 transition";
             const planVal = (data.roundHr || 0) * (data.time || 0) * (data.jig || 0);
 
-            if (currentLine === 'Line A' || currentLine === 'Line B') {
-                newRow.innerHTML = `
-                    <td class="p-3 font-medium text-gray-800 model-text">${data.model}</td>
-                    <td class="p-3 font-medium text-gray-800 door-text">${data.door}</td>
-                    <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}" min="0"></td>
-                    <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
-                    <td class="p-3 text-center text-gray-400">-</td>
-                `;
-            } else {
-                newRow.innerHTML = `
-                    <td class="p-3 w-72"><select class="searchable-model w-full border p-1 rounded"></select></td>
-                    <td class="p-3 w-48"><select class="searchable-door w-full border p-1 rounded"></select></td>
-                    <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}" min="0"></td>
-                    <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" min="0" oninput="calculatePlan(this)"></td>
-                    <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
-                    <td class="p-3 text-center"><button onclick="deleteRow(this)" class="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1.5 rounded-lg transition font-medium">ลบ</button></td>
-                `;
-            }
+            newRow.innerHTML = `
+                <td class="p-3 font-medium text-gray-800">${data.model}</td>
+                <td class="p-3 font-medium text-gray-800">${data.door}</td>
+                <td class="p-3 text-center"><input type="number" class="round-hr w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.roundHr}" oninput="calculatePlan(this)"></td>
+                <td class="p-3 text-center"><input type="number" class="time-val w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.time}" oninput="calculatePlan(this)"></td>
+                <td class="p-3 text-center"><input type="number" class="pallet w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.pallet}"></td>
+                <td class="p-3 text-center"><input type="number" class="jig w-20 bg-gray-50 border border-gray-300 rounded-lg p-2 text-center text-gray-800" value="${data.jig}" oninput="calculatePlan(this)"></td>
+                <td class="p-3 font-extrabold text-indigo-600 text-center text-base plan-val">${planVal.toLocaleString()}</td>
+                <td class="p-3 text-center text-gray-400">-</td>
+            `;
             tbody.appendChild(newRow);
         }
 
         function addRow() {
-            if (currentLine === 'Line A' || currentLine === 'Line B') return;
-            addRowData({ model: '', door: '', roundHr: 1, time: 1, pallet: 1, jig: 1 });
+            addRowData({ model: 'New Model', door: 'R', roundHr: 10, time: 8, pallet: 2, jig: 1 });
         }
 
-        function deleteRow(button) {
-            const row = button.closest('tr');
-            if(document.querySelectorAll('#tableBody tr').length > 1) {
-                row.remove();
-            } else {
-                alert("ต้องมีอย่างน้อย 1 แถวในตาราง");
+        // --- ส่วนจัดการหน้า "จำนวนประตูที่ต้องผลิต" พร้อมเชื่อมต่อ Supabase ---
+
+        async function fetchRefrigeratorData(queryField, value) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('door_model') // ตารางใน Supabase
+                    .select('*')
+                    .eq(queryField, value)
+                    .limit(1);
+                
+                if (error) throw error;
+                if (data && data.length > 0) {
+                    return data[0];
+                }
+            } catch (err) {
+                console.error("Error fetching from Supabase:", err);
+            }
+            return null;
+        }
+
+        async function fetchAllTypesForModel(modelName, codeVal) {
+            try {
+                let query = supabaseClient.from('door_model').select('*');
+                if (codeVal) query = query.eq('code', codeVal);
+                else if (modelName) query = query.eq('model', modelName);
+
+                const { data, error } = await query;
+                if (error) throw error;
+                return data || [];
+            } catch (err) {
+                console.error("Error fetching types:", err);
+                return [];
             }
         }
 
-        // ฟังก์ชันคำนวณหน้า "จำนวนประตูที่ต้องผลิต" อัตโนมัติ (Total Doors Needed - Stock)
+        function addDoorRequirementRow(prefill = {}) {
+            const tbody = document.getElementById('doorReqTableBody');
+            const newRow = document.createElement('tr');
+            newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
+            newRow.innerHTML = `
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" onblur="handleRefrigeratorInput(this, 'code')" onpaste="handleExcelPaste(event, this, 'code')"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.model || ''}" onblur="handleRefrigeratorInput(this, 'model')" onpaste="handleExcelPaste(event, this, 'model')"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.platform || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.colour || ''}"></td>
+                <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty || 10}" oninput="calcDoorReq(this)"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.doorModel || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.doorColour || prefill.colour || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.type || 'RR'}"></td>
+                <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
+                <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="${prefill.stock || 0}" oninput="calcDoorReq(this)"></td>
+                <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
+                <td class="p-2 flex items-center justify-center gap-1">
+                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'Line A'}">
+                    <button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
+                </td>
+            `;
+            tbody.appendChild(newRow);
+            calcDoorReq(newRow.querySelector('.plan-qty'));
+        }
+
+        async function handleRefrigeratorInput(inputElement, fieldType) {
+            const row = inputElement.closest('tr');
+            const val = inputElement.value.trim();
+            if (!val) return;
+
+            const matchedData = await fetchRefrigeratorData(fieldType, val);
+            if (matchedData) {
+                row.querySelector('.ref-code').value = matchedData.code || '';
+                row.querySelector('.ref-model').value = matchedData.model || '';
+                row.querySelector('.ref-platform').value = matchedData.platform || '';
+                row.querySelector('.ref-colour').value = matchedData.colour || '';
+                row.querySelector('.door-model').value = matchedData.door_model || matchedData.model || '';
+                row.querySelector('.door-colour').value = matchedData.colour || '';
+                row.querySelector('.door-line').value = matchedData.line || 'Line A';
+
+                // ตรวจสอบ Type หลายตัว (เช่น RR, RL, FR, FL) จาก Supabase
+                const allTypes = await fetchAllTypesForModel(matchedData.model, matchedData.code);
+                if (allTypes.length > 1) {
+                    // แตกแถวเพิ่มสำหรับ Type อื่นๆ
+                    const currentPlanQty = row.querySelector('.plan-qty').value;
+                    row.querySelector('.door-type').value = allTypes[0].type || 'RR';
+                    
+                    for (let i = 1; i < allTypes.length; i++) {
+                        addDoorRequirementRow({
+                            code: matchedData.code,
+                            model: matchedData.model,
+                            platform: matchedData.platform,
+                            colour: matchedData.colour,
+                            planQty: currentPlanQty,
+                            doorModel: allTypes[i].door_model || matchedData.model,
+                            doorColour: matchedData.colour,
+                            type: allTypes[i].type,
+                            stock: 0,
+                            line: allTypes[i].line || matchedData.line || 'Line A'
+                        });
+                    }
+                } else if (allTypes.length === 1) {
+                    row.querySelector('.door-type').value = allTypes[0].type || 'RR';
+                }
+            }
+        }
+
+        // รองรับการ Copy & Paste ข้อมูลหลายแถวจาก Excel / CSV
+        function handleExcelPaste(event, inputElement, fieldType) {
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedData = clipboardData.getData('Text');
+            if (pastedData.includes('\t') || pastedData.includes('\n')) {
+                event.preventDefault();
+                const rows = pastedData.split('\n').filter(r => r.trim() !== '');
+                let currentRow = inputElement.closest('tr');
+
+                rows.forEach(async (rowText, index) => {
+                    const cols = rowText.split('\t');
+                    const val = cols[0] ? cols[0].trim() : '';
+                    if (index > 0) {
+                        addDoorRequirementRow();
+                        const allRows = document.querySelectorAll('.door-req-row');
+                        currentRow = allRows[allRows.length - 1];
+                    }
+                    const targetInput = currentRow.querySelector(`.ref-${fieldType}`);
+                    if (targetInput) {
+                        targetInput.value = val;
+                        await handleRefrigeratorInput(targetInput, fieldType);
+                    }
+                });
+            }
+        }
+
         function calcDoorReq(element) {
             const row = element.closest('tr');
             const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
             const stock = parseFloat(row.querySelector('.stock-qty').value) || 0;
             
-            // สมมติอัตราส่วนต่อยูนิตเป็น 1 หรือปรับตามความเหมาะสม
-            const totalNeeded = planQty; 
+            const totalNeeded = planQty; // ตามสูตร 1 ต่อ 1 ต่อฝา หรือปรับสัดส่วนตามต้องการ
             let prodRequired = totalNeeded - stock;
             if(prodRequired < 0) prodRequired = 0;
 
@@ -326,37 +384,12 @@
             row.querySelector('.prod-required').textContent = prodRequired.toLocaleString();
         }
 
-        // เพิ่มแถวในหน้า จำนวนประตูที่ต้องผลิต
-        function addDoorRequirementRow() {
-            const tbody = document.getElementById('doorReqTableBody');
-            const newRow = document.createElement('tr');
-            newRow.className = "hover:bg-gray-50 transition text-center";
-            newRow.innerHTML = `
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value=""></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value=""></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value=""></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs" value=""></td>
-                <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="0" oninput="calcDoorReq(this)"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs" value=""></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs" value=""></td>
-                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs" value=""></td>
-                <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
-                <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="0" oninput="calcDoorReq(this)"></td>
-                <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
-                <td class="p-2 flex items-center justify-center gap-1">
-                    <input type="text" class="w-16 p-1 border rounded text-center text-xs" value="Line A">
-                    <button onclick="this.closest('tr').remove()" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
-                </td>
-            `;
-            tbody.appendChild(newRow);
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             switchLine('Line A');
         });
 
         function saveData() {
-            alert(`บันทึกข้อมูลแผนผลิตสำเร็จเรียบร้อย!`);
+            alert(`บันทึกข้อมูลแผนผลิตและเชื่อมต่อฐานข้อมูล Supabase สำเร็จเรียบร้อย!`);
         }
     </script>
 </body>
