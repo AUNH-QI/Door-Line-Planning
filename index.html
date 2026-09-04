@@ -80,7 +80,7 @@
             <!-- KPI Cards Section -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
                 <div class="custom-card rounded-xl p-4 border-l-4 border-blue-500">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan REFRIGERATORF</p>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan REF</p>
                     <p id="kpi-plan-ref" class="text-2xl font-extrabold text-gray-800 mt-1">0</p>
                 </div>
                 <div class="custom-card rounded-xl p-4 border-l-4 border-emerald-500">
@@ -203,6 +203,9 @@
         async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
             if (!matchedRecords || matchedRecords.length === 0) return;
 
+            const groupId = 'group_' + Date.now + '_' + Math.random();
+            row.setAttribute('data-group', groupId);
+
             const primary = matchedRecords[0];
             row.querySelector('.ref-code').value = primary.fg_code || '';
             row.querySelector('.ref-model').value = primary.commercial_model || '';
@@ -212,7 +215,7 @@
             row.querySelector('.door-model').value = primary.door_model || '';
             row.querySelector('.door-colour').value = primary.door_color || '';
             row.querySelector('.door-type').value = primary.door_type || '';
-            row.querySelector('.door-line').value = primary.line || 'Line A';
+            row.querySelector('.door-line').value = primary.line || 'A-Door';
 
             if (specifiedPlanQty !== null) {
                 row.querySelector('.plan-qty').value = specifiedPlanQty;
@@ -227,6 +230,7 @@
                     const rec = matchedRecords[i];
                     const newRow = document.createElement('tr');
                     newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
+                    newRow.setAttribute('data-group', groupId);
                     newRow.innerHTML = `
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
                         <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${currentPlanQty}" oninput="calcDoorReq(this)"></td>
@@ -239,7 +243,7 @@
                         <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
                         <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                         <td class="p-2 flex items-center justify-center gap-1">
-                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'Line A'}" readonly>
+                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'A-Door'}" readonly>
                             <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                         </td>
                     `;
@@ -307,7 +311,9 @@
         function addDoorRequirementRow(prefill = {}) {
             const tbody = document.getElementById('doorReqTableBody');
             const newRow = document.createElement('tr');
+            const groupId = 'group_' + Date.now() + '_' + Math.random();
             newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
+            newRow.setAttribute('data-group', groupId);
             newRow.innerHTML = `
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
                 <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty || 10}" oninput="calcDoorReq(this)"></td>
@@ -320,7 +326,7 @@
                 <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
                 <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
                 <td class="p-2 flex items-center justify-center gap-1">
-                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'Line A'}" readonly>
+                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'A-Door'}" readonly>
                     <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                 </td>
             `;
@@ -348,22 +354,30 @@
             let dnd = 0;
 
             const rows = document.querySelectorAll('.door-req-row');
+            const processedGroups = new Set();
+
             rows.forEach(row => {
                 const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
                 const prodReq = parseFloat(row.querySelector('.prod-required').textContent.replace(/,/g, '')) || 0;
                 const line = (row.querySelector('.door-line').value || '').trim().toLowerCase();
+                const groupId = row.getAttribute('data-group') || row;
 
-                totalPlanRef += planQty;
+                // นับ Plan REF เฉพาะกลุ่มรายการที่ไม่ซ้ำกัน (ป้องกันการนับซ้ำเมื่อตู้เดียวแยกหลายฝา)
+                if (!processedGroups.has(groupId)) {
+                    processedGroups.add(groupId);
+                    totalPlanRef += planQty;
+                }
+
                 totalPlanDoor += prodReq;
 
-                if (line === 'line a' || line === 'a') {
-                    aDoor += prodReq;
-                } else if (line === 'line b' || line === 'b') {
-                    bDoor += prodReq;
-                } else if (line === 'line c' || line === 'c') {
-                    cDoor += prodReq;
-                } else if (line === 'dnd') {
+                if (line.includes('dnd')) {
                     dnd += prodReq;
+                } else if (line.includes('a')) {
+                    aDoor += prodReq;
+                } else if (line.includes('b')) {
+                    bDoor += prodReq;
+                } else if (line.includes('c')) {
+                    cDoor += prodReq;
                 }
             });
 
