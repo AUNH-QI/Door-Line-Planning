@@ -104,7 +104,7 @@
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">จำนวนประตูที่ต้องผลิต</h1>
                 </div>
                 <div class="flex gap-3">
-                    <span class="text-xs text-gray-500 self-center">*รองรับการ Copy ข้อมูล 2 คอลัมน์ (Code + Plan Quantity) หรือแบบฟอร์มตารางจาก Excel มาวางได้ทันที</span>
+                    <span class="text-xs text-gray-500 self-center">*รองรับการ Copy ข้อมูล 2 คอลัมน์ (Code + Plan Quantity) หรือวางจาก Excel ได้ทันที</span>
                     <button onclick="addDoorRequirementRow()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition flex items-center gap-2">
                         <span>+ เพิ่มรายการ</span>
                     </button>
@@ -242,22 +242,21 @@
             addRowData({ model: 'New Model', door: 'R', roundHr: 10, time: 8, pallet: 2, jig: 1 });
         }
 
-        // --- ส่วนจัดการหน้า "จำนวนประตูที่ต้องผลิต" พร้อมดึงข้อมูลแบบ Flexible Lookup ---
+        // --- ส่วนจัดการหน้า "จำนวนประตูที่ต้องผลิต" ดึงข้อมูลจาก production_planning_master ---
 
-        async function fetchRefrigeratorData(queryField, value) {
+        async function fetchMasterData(codeVal) {
             try {
-                // ค้นหาแบบตรงตัวก่อน
                 let { data, error } = await supabaseClient
-                    .from('door_model')
+                    .from('production_planning_master')
                     .select('*')
-                    .ilike(queryField, value);
+                    .ilike('code', codeVal.trim());
                 
                 if (error) throw error;
                 if (data && data.length > 0) {
                     return data;
                 }
             } catch (err) {
-                console.error("Error fetching from Supabase:", err);
+                console.error("Error fetching from production_planning_master:", err);
             }
             return [];
         }
@@ -265,15 +264,16 @@
         async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
             if (!matchedRecords || matchedRecords.length === 0) return;
 
-            // ใช้เรคคอร์ดแรกเป็นตัวเติมข้อมูลหลักของ Refrigerator
+            // ใช้เรคคอร์ดแรกเติมข้อมูลหลัก
             const primary = matchedRecords[0];
             row.querySelector('.ref-code').value = primary.code || '';
-            row.querySelector('.ref-model').value = primary.model || '';
-            row.querySelector('.ref-platform').value = primary.platform || '';
-            row.querySelector('.ref-colour').value = primary.colour || '';
-            row.querySelector('.door-model').value = primary.door_model || primary.model || '';
-            row.querySelector('.door-colour').value = primary.colour || '';
-            row.querySelector('.door-type').value = primary.type || 'RR';
+            row.querySelector('.ref-model').value = primary.commercial_model || '';
+            row.querySelector('.ref-platform').value = primary.refrigerator_model || '';
+            row.querySelector('.ref-colour').value = primary.refrigerator_color || '';
+            
+            row.querySelector('.door-model').value = primary.door_model || '';
+            row.querySelector('.door-colour').value = primary.door_color || '';
+            row.querySelector('.door-type').value = primary.door_type || '';
             row.querySelector('.door-line').value = primary.line || 'Line A';
 
             if (specifiedPlanQty !== null) {
@@ -281,7 +281,7 @@
             }
             calcDoorReq(row.querySelector('.plan-qty'));
 
-            // หากมีหลาย Type (เช่น RR, RL, FR, FL สำหรับ Code เดียวกัน) ให้สร้างแถวเพิ่มสำหรับ Type ที่เหลือ
+            // หาก Code เดียวกันมีหลายแถว/ประเภทประตู ให้สร้างแถวเพิ่มอัตโนมัติ
             if (matchedRecords.length > 1) {
                 const tbody = document.getElementById('doorReqTableBody');
                 const currentPlanQty = row.querySelector('.plan-qty').value;
@@ -291,14 +291,14 @@
                     const newRow = document.createElement('tr');
                     newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
                     newRow.innerHTML = `
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.code || ''}" onblur="handleRefrigeratorInput(this, 'code')" onpaste="handleExcelPaste(event, this, 'code')"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.model || ''}" onblur="handleRefrigeratorInput(this, 'model')" onpaste="handleExcelPaste(event, this, 'model')"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.platform || ''}"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.colour || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.code || ''}" onblur="handleCodeInput(this)" onpaste="handleExcelPaste(event, this)"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}"></td>
                         <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${currentPlanQty}" oninput="calcDoorReq(this)"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || rec.model || ''}"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.colour || ''}"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.type || 'RR'}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.door_color || ''}"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}"></td>
                         <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
                         <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="0" oninput="calcDoorReq(this)"></td>
                         <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
@@ -313,19 +313,19 @@
             }
         }
 
-        async function handleRefrigeratorInput(inputElement, fieldType) {
+        async function handleCodeInput(inputElement) {
             const row = inputElement.closest('tr');
             const val = inputElement.value.trim();
             if (!val) return;
 
-            const records = await fetchRefrigeratorData(fieldType, val);
+            const records = await fetchMasterData(val);
             if (records.length > 0) {
                 await populateRowData(row, records);
             }
         }
 
-        // รองรับการ Copy แถวหรือข้อมูลตารางจาก Excel มาวาง (รองรับทั้งแบบวางช่อง Code เดี่ยว, หรือวาง 2 คอลัมน์ [Code, Plan Qty] หรือแบบหลายคอลัมน์)
-        async function handleExcelPaste(event, inputElement, fieldType) {
+        // รองรับการ Copy & Paste ข้อมูลจาก Excel (Code เดี่ยว หรือ [Code, Plan Quantity])
+        async function handleExcelPaste(event, inputElement) {
             const clipboardData = event.clipboardData || window.clipboardData;
             const pastedData = clipboardData.getData('Text');
             if (pastedData.includes('\t') || pastedData.includes('\n')) {
@@ -348,7 +348,7 @@
                     }
 
                     targetRow.querySelector('.ref-code').value = codeVal;
-                    const records = await fetchRefrigeratorData('code', codeVal);
+                    const records = await fetchMasterData(codeVal);
                     if (records.length > 0) {
                         await populateRowData(targetRow, records, planQtyVal);
                     }
@@ -361,14 +361,14 @@
             const newRow = document.createElement('tr');
             newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
             newRow.innerHTML = `
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" onblur="handleRefrigeratorInput(this, 'code')" onpaste="handleExcelPaste(event, this, 'code')"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.model || ''}" onblur="handleRefrigeratorInput(this, 'model')" onpaste="handleExcelPaste(event, this, 'model')"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.platform || ''}"></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.colour || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" onblur="handleCodeInput(this)" onpaste="handleExcelPaste(event, this)"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}"></td>
                 <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty || 10}" oninput="calcDoorReq(this)"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.doorModel || ''}"></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.doorColour || prefill.colour || ''}"></td>
-                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.type || 'RR'}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.door_model || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.door_color || ''}"></td>
+                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}"></td>
                 <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
                 <td class="p-2 border-r"><input type="number" class="w-16 p-1 border rounded text-center text-xs stock-qty" value="${prefill.stock || 0}" oninput="calcDoorReq(this)"></td>
                 <td class="p-2 border-r font-extrabold text-emerald-600 prod-required">0</td>
@@ -399,7 +399,7 @@
         });
 
         function saveData() {
-            alert(`บันทึกข้อมูลแผนผลิตและดึงฐานข้อมูล Supabase สำเร็จเรียบร้อย!`);
+            alert(`บันทึกข้อมูลแผนผลิตและดึงฐานข้อมูล production_planning_master สำเร็จเรียบร้อย!`);
         }
     </script>
 </body>
