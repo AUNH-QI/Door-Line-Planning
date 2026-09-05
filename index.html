@@ -21,11 +21,17 @@
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </div>
         <div class="flex flex-col gap-6 w-full items-center">
-            <div onclick="switchTab('planning')" id="nav-planning" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition">
+            <!-- Nav: Planning -->
+            <div onclick="switchTab('planning')" id="nav-planning" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="Daily Door Planning">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
             </div>
-            <div onclick="switchTab('doors')" id="nav-doors" class="p-3 bg-white/20 rounded-xl cursor-pointer shadow">
+            <!-- Nav: Doors Requirement -->
+            <div onclick="switchTab('doors')" id="nav-doors" class="p-3 bg-white/20 rounded-xl cursor-pointer shadow" title="จำนวนประตูที่ต้องผลิต">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+            </div>
+            <!-- Nav: Master Stock -->
+            <div onclick="switchTab('master')" id="nav-master" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="Master Stock Management">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
             </div>
         </div>
     </div>
@@ -69,41 +75,33 @@
 
         <!-- View: จำนวนประตูที่ต้องผลิต -->
         <div id="view-doors" class="view-section">
-            <!-- Header & KPI Cards Inline Section -->
             <div class="custom-card rounded-2xl p-6 mb-8 flex flex-col lg:flex-row justify-between items-center gap-6">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-emerald-600 uppercase bg-emerald-50 px-3 py-1 rounded-full">REQUIREMENT CALCULATION</span>
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">จำนวนประตูที่ต้องผลิต</h1>
                 </div>
 
-                <!-- KPI Cards Inline (Expanded Width to Cover Content) -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 w-full lg:w-[75%]">
-                    <!-- Plan REFRIGERATOR: สีม่วง -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-purple-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan REFRIGERATOR</p>
                         <p id="kpi-plan-ref" class="text-xl font-extrabold text-purple-600 mt-0.5">0</p>
                     </div>
-                    <!-- Plan DOOR: สีน้ำเงิน -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-blue-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan DOOR</p>
                         <p id="kpi-plan-door" class="text-xl font-extrabold text-blue-600 mt-0.5">0</p>
                     </div>
-                    <!-- A-Door: สีแดง -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-red-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">A-Door</p>
                         <p id="kpi-a-door" class="text-xl font-extrabold text-red-600 mt-0.5">0</p>
                     </div>
-                    <!-- B-Door: สีเขียว -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-emerald-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">B-Door</p>
                         <p id="kpi-b-door" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
                     </div>
-                    <!-- C-Door: สีเหลือง -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-amber-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">C-Door</p>
                         <p id="kpi-c-door" class="text-xl font-extrabold text-amber-600 mt-0.5">0</p>
                     </div>
-                    <!-- DND: สีฟ้า -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-sky-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">DND</p>
                         <p id="kpi-dnd" class="text-xl font-extrabold text-sky-600 mt-0.5">0</p>
@@ -111,7 +109,6 @@
                 </div>
             </div>
 
-            <!-- Summary Table Section -->
             <div class="custom-card rounded-2xl p-6 mb-8 shadow-lg">
                 <h2 class="text-lg font-bold text-gray-800 mb-4">Summary: สรุป Model ฝาที่ต้องผลิต</h2>
                 <div class="overflow-x-auto">
@@ -127,18 +124,15 @@
                                 <th class="p-3 text-emerald-700 font-bold">total doors needed</th>
                             </tr>
                         </thead>
-                        <tbody id="summaryTableBody" class="divide-y divide-gray-100">
-                            <!-- Populated dynamically -->
-                        </tbody>
+                        <tbody id="summaryTableBody" class="divide-y divide-gray-100"></tbody>
                     </table>
                 </div>
             </div>
 
             <div class="custom-card rounded-2xl p-6 shadow-lg">
-                <!-- เพิ่มชื่อหัวตาราง Input Data -->
                 <div class="mb-4">
                     <h2 class="text-lg font-bold text-gray-800">Input Data</h2>
-                    <p class="text-xs text-gray-500 mt-0.5">กรอก หรือ วางข้อมูลแผนการผลิตตู็เย็น เพื่อคำนวณจำนวนประตูที่ต้องใช้</p>
+                    <p class="text-xs text-gray-500 mt-0.5">กรอก หรือ วางข้อมูลแผนการผลิตตู้เย็น เพื่อคำนวณจำนวนประตูที่ต้องใช้</p>
                 </div>
 
                 <div class="overflow-x-auto mb-4">
@@ -164,11 +158,51 @@
                         <tbody id="doorReqTableBody" class="divide-y divide-gray-100"></tbody>
                     </table>
                 </div>
-                <!-- ปุ่มเพิ่มแถวว่างด้านล่างตาราง -->
                 <button onclick="addDoorRequirementRow()" class="w-full py-3 border-2 border-dashed border-indigo-300 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
                     + เพิ่มแถวว่างสำหรับกรอกหรือวางข้อมูล
                 </button>
+            </div>
+        </div>
+
+        <!-- View: Master Stock Management -->
+        <div id="view-master" class="view-section hidden">
+            <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
+                <div>
+                    <span class="text-xs font-bold tracking-widest text-blue-600 uppercase bg-blue-50 px-3 py-1 rounded-full">DATABASE MANAGEMENT</span>
+                    <h1 class="text-3xl font-extrabold text-gray-800 mt-2">Master Stock (Production Planning)</h1>
+                </div>
+                <button onclick="fetchMasterStockData()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-semibold text-sm transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    รีเฟรชข้อมูล
+                </button>
+            </div>
+
+            <div class="custom-card rounded-2xl p-6 shadow-lg">
+                <div class="flex justify-between items-center mb-6">
+                    <input type="text" id="masterSearch" placeholder="🔍 ค้นหาด้วย FG Code, Model, หรือสี..." class="w-80 p-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="filterMasterStock()">
+                    <span id="masterCount" class="text-sm font-semibold text-gray-500">ทั้งหมด 0 รายการ</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-gray-700 bg-gray-100">
+                                <th class="p-3 border-r">fg_code</th>
+                                <th class="p-3 border-r">commercial_model</th>
+                                <th class="p-3 border-r">group</th>
+                                <th class="p-3 border-r">material</th>
+                                <th class="p-3 border-r">colour</th>
+                                <th class="p-3 border-r">type</th>
+                                <th class="p-3 border-r">door_color</th>
+                                <th class="p-3 border-r">door_model</th>
+                                <th class="p-3 border-r">line</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masterTableBody" class="divide-y divide-gray-100">
+                            <tr><td colspan="9" class="p-6 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -181,20 +215,98 @@
 
         let productionData = { 'Line A': [], 'Line B': [], 'Line C': [] };
         let currentLine = 'Line A';
+        let fullMasterCache = [];
 
         function switchTab(tabName) {
             document.getElementById('view-planning').classList.add('hidden');
             document.getElementById('view-doors').classList.add('hidden');
+            document.getElementById('view-master').classList.add('hidden');
+
+            document.getElementById('nav-planning').classList.remove('bg-white/20', 'shadow');
+            document.getElementById('nav-doors').classList.remove('bg-white/20', 'shadow');
+            document.getElementById('nav-master').classList.remove('bg-white/20', 'shadow');
+
             if(tabName === 'planning') {
                 document.getElementById('view-planning').classList.remove('hidden');
+                document.getElementById('nav-planning').classList.add('bg-white/20', 'shadow');
             } else if(tabName === 'doors') {
                 document.getElementById('view-doors').classList.remove('hidden');
+                document.getElementById('nav-doors').classList.add('bg-white/20', 'shadow');
                 if(document.getElementById('doorReqTableBody').children.length === 0) {
                     addDoorRequirementRow();
                     addDoorRequirementRow();
                     addDoorRequirementRow();
                 }
+            } else if(tabName === 'master') {
+                document.getElementById('view-master').classList.remove('hidden');
+                document.getElementById('nav-master').classList.add('bg-white/20', 'shadow');
+                fetchMasterStockData();
             }
+        }
+
+        async function fetchMasterStockData() {
+            const tbody = document.getElementById('masterTableBody');
+            tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">กำลังโหลดข้อมูลจากฐานข้อมูล...</td></tr>`;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('production_planning_master')
+                    .select('*')
+                    .order('fg_code', { ascending: true });
+                
+                if (error) {
+                    console.error("Supabase Error:", error);
+                    tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+                    return;
+                }
+                
+                fullMasterCache = data || [];
+                renderMasterTable(fullMasterCache);
+            } catch (err) {
+                console.error("Fetch Exception:", err);
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>`;
+            }
+        }
+
+        function renderMasterTable(dataList) {
+            const tbody = document.getElementById('masterTableBody');
+            tbody.innerHTML = '';
+            document.getElementById('masterCount').textContent = `ทั้งหมด ${dataList.length} รายการ`;
+
+            if (dataList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">ไม่พบข้อมูลในระบบ Stock</td></tr>`;
+                return;
+            }
+
+            dataList.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+                    <td class="p-3 border-r font-medium text-gray-800">${item.commercial_model || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.group || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.material || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.refrigerator_color || item.colour || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.door_type || item.type || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.door_color || '-'}</td>
+                    <td class="p-3 border-r font-semibold text-blue-600">${item.door_model || '-'}</td>
+                    <td class="p-3 text-gray-700">${item.line || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterMasterStock() {
+            const keyword = document.getElementById('masterSearch').value.toLowerCase();
+            const filtered = fullMasterCache.filter(item => {
+                return (
+                    (item.fg_code && item.fg_code.toLowerCase().includes(keyword)) ||
+                    (item.commercial_model && item.commercial_model.toLowerCase().includes(keyword)) ||
+                    (item.door_model && item.door_model.toLowerCase().includes(keyword)) ||
+                    (item.refrigerator_color && item.refrigerator_color.toLowerCase().includes(keyword))
+                );
+            });
+            renderMasterTable(filtered);
         }
 
         function switchLine(lineName) {
@@ -258,7 +370,6 @@
             row.querySelector('.door-model').value = primary.door_model || '';
             row.querySelector('.door-colour').value = primary.door_color || '';
             row.querySelector('.door-type').value = primary.door_type || '';
-            // Default คอลัมน์ line เป็นค่าจาก DB หรือปล่อยว่าง ""
             row.querySelector('.door-line').value = primary.line || '';
 
             let initialPlanQty = specifiedPlanQty !== null ? specifiedPlanQty : (row.querySelector('.plan-qty').value || '');
@@ -370,7 +481,6 @@
             const groupId = 'group_' + Date.now() + '_' + Math.random();
             newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
             newRow.setAttribute('data-group', groupId);
-            // ปรับ default value ของ door-line ให้เป็น "" แทน 'A-Door'
             newRow.innerHTML = `
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
                 <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty !== undefined ? prefill.planQty : ''}" oninput="calcDoorReq(this)"></td>
@@ -398,11 +508,11 @@
             if (groupId) {
                 const groupRows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
                 groupRows.forEach(r => {
-                    const input = r.querySelector('.plan-qty');
-                    if (input && input !== element) {
-                        input.value = newVal;
+                    const input = r.querySelector('.plan-xx'); // safe check
+                    const targetInput = r.querySelector('.plan-qty');
+                    if (targetInput && targetInput !== element) {
+                        targetInput.value = newVal;
                     }
-                    
                     const pQty = parseFloat(newVal) || 0;
                     r.querySelector('.total-needed').textContent = pQty.toLocaleString();
                 });
@@ -466,6 +576,7 @@
             document.getElementById('kpi-plan-ref').textContent = totalPlanRef.toLocaleString();
             document.getElementById('kpi-plan-door').textContent = totalPlanDoor.toLocaleString();
             document.getElementById('kpi-a-door').textContent = aDoor.toLocaleString();
+            document.getElementById('kpi-b-door').textContent = bDict = bDoor.toLocaleString(); // fix syntax
             document.getElementById('kpi-b-door').textContent = bDoor.toLocaleString();
             document.getElementById('kpi-c-door').textContent = cDoor.toLocaleString();
             document.getElementById('kpi-dnd').textContent = dnd.toLocaleString();
