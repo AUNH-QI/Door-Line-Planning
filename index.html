@@ -78,29 +78,35 @@
 
                 <!-- KPI Cards Inline (Expanded Width to Cover Content) -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 w-full lg:w-[75%]">
-                    <div class="custom-card rounded-xl p-3 border-l-4 border-blue-500 text-center lg:text-left">
-                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan REF</p>
-                        <p id="kpi-plan-ref" class="text-xl font-extrabold text-gray-800 mt-0.5">0</p>
-                    </div>
-                    <div class="custom-card rounded-xl p-3 border-l-4 border-emerald-500 text-center lg:text-left">
-                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan DOOR</p>
-                        <p id="kpi-plan-door" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
-                    </div>
-                    <div class="custom-card rounded-xl p-3 border-l-4 border-indigo-500 text-center lg:text-left">
-                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">A-Door</p>
-                        <p id="kpi-a-door" class="text-xl font-extrabold text-indigo-600 mt-0.5">0</p>
-                    </div>
+                    <!-- Plan REFRIGERATOR: สีม่วง -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-purple-500 text-center lg:text-left">
-                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">B-Door</p>
-                        <p id="kpi-b-door" class="text-xl font-extrabold text-purple-600 mt-0.5">0</p>
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan REFRIGERATOR</p>
+                        <p id="kpi-plan-ref" class="text-xl font-extrabold text-purple-600 mt-0.5">0</p>
                     </div>
+                    <!-- Plan DOOR: สีน้ำเงิน -->
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-blue-500 text-center lg:text-left">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Plan DOOR</p>
+                        <p id="kpi-plan-door" class="text-xl font-extrabold text-blue-600 mt-0.5">0</p>
+                    </div>
+                    <!-- A-Door: สีแดง -->
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-red-500 text-center lg:text-left">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">A-Door</p>
+                        <p id="kpi-a-door" class="text-xl font-extrabold text-red-600 mt-0.5">0</p>
+                    </div>
+                    <!-- B-Door: สีเขียว -->
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-emerald-500 text-center lg:text-left">
+                        <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">B-Door</p>
+                        <p id="kpi-b-door" class="text-xl font-extrabold text-emerald-600 mt-0.5">0</p>
+                    </div>
+                    <!-- C-Door: สีเหลือง -->
                     <div class="custom-card rounded-xl p-3 border-l-4 border-amber-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">C-Door</p>
                         <p id="kpi-c-door" class="text-xl font-extrabold text-amber-600 mt-0.5">0</p>
                     </div>
-                    <div class="custom-card rounded-xl p-3 border-l-4 border-rose-500 text-center lg:text-left">
+                    <!-- DND: สีฟ้า -->
+                    <div class="custom-card rounded-xl p-3 border-l-4 border-sky-500 text-center lg:text-left">
                         <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">DND</p>
-                        <p id="kpi-dnd" class="text-xl font-extrabold text-rose-600 mt-0.5">0</p>
+                        <p id="kpi-dnd" class="text-xl font-extrabold text-sky-600 mt-0.5">0</p>
                     </div>
                 </div>
             </div>
@@ -129,6 +135,12 @@
             </div>
 
             <div class="custom-card rounded-2xl p-6 shadow-lg">
+                <!-- เพิ่มชื่อหัวตาราง Input Data -->
+                <div class="mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">Input Data</h2>
+                    <p class="text-xs text-gray-500 mt-0.5">กรอก หรือ วางข้อมูลแผนการผลิตตู็เย็น เพื่อคำนวณจำนวนประตูที่ต้องใช้</p>
+                </div>
+
                 <div class="overflow-x-auto mb-4">
                     <table id="doorReqTable" class="w-full text-left border-collapse text-sm">
                         <thead>
@@ -246,7 +258,8 @@
             row.querySelector('.door-model').value = primary.door_model || '';
             row.querySelector('.door-colour').value = primary.door_color || '';
             row.querySelector('.door-type').value = primary.door_type || '';
-            row.querySelector('.door-line').value = primary.line || 'A-Door';
+            // Default คอลัมน์ line เป็นค่าจาก DB หรือปล่อยว่าง ""
+            row.querySelector('.door-line').value = primary.line || '';
 
             let initialPlanQty = specifiedPlanQty !== null ? specifiedPlanQty : (row.querySelector('.plan-qty').value || '');
             row.querySelector('.plan-qty').value = initialPlanQty;
@@ -271,7 +284,7 @@
                         <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}" readonly></td>
                         <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
                         <td class="p-2 flex items-center justify-center gap-1">
-                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || 'A-Door'}" readonly>
+                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || ''}" readonly>
                             <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                         </td>
                     `;
@@ -357,6 +370,7 @@
             const groupId = 'group_' + Date.now() + '_' + Math.random();
             newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
             newRow.setAttribute('data-group', groupId);
+            // ปรับ default value ของ door-line ให้เป็น "" แทน 'A-Door'
             newRow.innerHTML = `
                 <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
                 <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty !== undefined ? prefill.planQty : ''}" oninput="calcDoorReq(this)"></td>
@@ -368,7 +382,7 @@
                 <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}" readonly></td>
                 <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
                 <td class="p-2 flex items-center justify-center gap-1">
-                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || 'A-Door'}" readonly>
+                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || ''}" readonly>
                     <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                 </td>
             `;
