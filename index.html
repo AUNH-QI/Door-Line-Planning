@@ -29,8 +29,8 @@
             <div onclick="switchTab('doors')" id="nav-doors" class="p-3 bg-white/20 rounded-xl cursor-pointer shadow" title="จำนวนประตูที่ต้องผลิต">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
             </div>
-            <!-- Nav: Master Stock -->
-            <div onclick="switchTab('master')" id="nav-master" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="Master Stock Management">
+            <!-- Nav: DATA BASE -->
+            <div onclick="switchTab('master')" id="nav-master" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="DATA BASE">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
             </div>
         </div>
@@ -165,12 +165,12 @@
             </div>
         </div>
 
-        <!-- View: Master Stock Management -->
+        <!-- View: DATA BASE Management -->
         <div id="view-master" class="view-section hidden">
             <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-blue-600 uppercase bg-blue-50 px-3 py-1 rounded-full">DATABASE MANAGEMENT</span>
-                    <h1 class="text-3xl font-extrabold text-gray-800 mt-2">Master Stock (Production Planning)</h1>
+                    <h1 class="text-3xl font-extrabold text-gray-800 mt-2">DATA BASE</h1>
                 </div>
                 <button onclick="fetchMasterStockData()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-semibold text-sm transition flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -179,10 +179,19 @@
             </div>
 
             <div class="custom-card rounded-2xl p-6 shadow-lg">
-                <div class="flex justify-between items-center mb-6">
-                    <input type="text" id="masterSearch" placeholder="🔍 ค้นหาด้วย FG Code, Model, หรือสี..." class="w-80 p-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="filterMasterStock()">
-                    <span id="masterCount" class="text-sm font-semibold text-gray-500">ทั้งหมด 0 รายการ</span>
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <input type="text" id="masterSearch" placeholder="🔍 ค้นหาด้วย FG Code, Model, หรือสี..." class="w-full sm:w-80 p-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="handleSearchInput()">
+                        <select id="pageSizeSelect" class="p-2.5 border rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="changePageSize()">
+                            <option value="50">50 แถว</option>
+                            <option value="100">100 แถว</option>
+                            <option value="500">500 แถว</option>
+                            <option value="all">ทั้งหมด</option>
+                        </select>
+                    </div>
+                    <span id="masterCount" class="text-sm font-semibold text-gray-500">แสดง 0 ถึง 0 จากทั้งหมด 0 รายการ</span>
                 </div>
+                
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -203,6 +212,13 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Pagination Controls -->
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">ก่อนหน้า</button>
+                    <span id="pageInfo" class="text-sm font-medium text-gray-600">หน้าที่ 1 / 1</span>
+                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">ถัดไป</button>
+                </div>
             </div>
         </div>
 
@@ -216,6 +232,9 @@
         let productionData = { 'Line A': [], 'Line B': [], 'Line C': [] };
         let currentLine = 'Line A';
         let fullMasterCache = [];
+        let filteredMasterCache = [];
+        let currentPage = 1;
+        let pageSize = 50;
 
         function switchTab(tabName) {
             document.getElementById('view-planning').classList.add('hidden');
@@ -240,7 +259,11 @@
             } else if(tabName === 'master') {
                 document.getElementById('view-master').classList.remove('hidden');
                 document.getElementById('nav-master').classList.add('bg-white/20', 'shadow');
-                fetchMasterStockData();
+                if (fullMasterCache.length === 0) {
+                    fetchMasterStockData();
+                } else {
+                    renderMasterTable();
+                }
             }
         }
 
@@ -261,24 +284,50 @@
                 }
                 
                 fullMasterCache = data || [];
-                renderMasterTable(fullMasterCache);
+                filteredMasterCache = [...fullMasterCache];
+                currentPage = 1;
+                renderMasterTable();
             } catch (err) {
                 console.error("Fetch Exception:", err);
                 tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>`;
             }
         }
 
-        function renderMasterTable(dataList) {
+        function renderMasterTable() {
             const tbody = document.getElementById('masterTableBody');
             tbody.innerHTML = '';
-            document.getElementById('masterCount').textContent = `ทั้งหมด ${dataList.length} รายการ`;
 
-            if (dataList.length === 0) {
+            const totalItems = filteredMasterCache.length;
+            
+            if (totalItems === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">ไม่พบข้อมูลในระบบ Stock</td></tr>`;
+                document.getElementById('masterCount').textContent = `แสดง 0 ถึง 0 จากทั้งหมด 0 รายการ`;
+                document.getElementById('pageInfo').textContent = `หน้าที่ 1 / 1`;
+                document.getElementById('prevPageBtn').disabled = true;
+                document.getElementById('nextPageBtn').disabled = true;
                 return;
             }
 
-            dataList.forEach(item => {
+            let startIdx = 0;
+            let endIdx = totalItems;
+            let totalPages = 1;
+
+            if (pageSize !== 'all') {
+                const ps = parseInt(pageSize);
+                totalPages = Math.ceil(totalItems / ps);
+                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) currentPage = 1;
+
+                startIdx = (currentPage - 1) * ps;
+                endIdx = Math.min(startIdx + ps, totalItems);
+            } else {
+                currentPage = 1;
+                totalPages = 1;
+            }
+
+            const pageItems = filteredMasterCache.slice(startIdx, endIdx);
+
+            pageItems.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition";
                 tr.innerHTML = `
@@ -294,11 +343,17 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            document.getElementById('masterCount').textContent = `แสดง ${startIdx + 1} ถึง ${endIdx} จากทั้งหมด ${totalItems} รายการ`;
+            document.getElementById('pageInfo').textContent = `หน้าที่ ${currentPage} / ${totalPages}`;
+            
+            document.getElementById('prevPageBtn').disabled = (currentPage <= 1 || pageSize === 'all');
+            document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages || pageSize === 'all');
         }
 
-        function filterMasterStock() {
+        function handleSearchInput() {
             const keyword = document.getElementById('masterSearch').value.toLowerCase();
-            const filtered = fullMasterCache.filter(item => {
+            filteredMasterCache = fullMasterCache.filter(item => {
                 return (
                     (item.fg_code && item.fg_code.toLowerCase().includes(keyword)) ||
                     (item.commercial_model && item.commercial_model.toLowerCase().includes(keyword)) ||
@@ -306,7 +361,26 @@
                     (item.refrigerator_color && item.refrigerator_color.toLowerCase().includes(keyword))
                 );
             });
-            renderMasterTable(filtered);
+            currentPage = 1;
+            renderMasterTable();
+        }
+
+        function changePageSize() {
+            pageSize = document.getElementById('pageSizeSelect').value;
+            currentPage = 1;
+            renderMasterTable();
+        }
+
+        function changePage(direction) {
+            if (pageSize === 'all') return;
+            const ps = parseInt(pageSize);
+            const totalPages = Math.ceil(filteredMasterCache.length / ps);
+            
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            renderMasterTable();
         }
 
         function switchLine(lineName) {
