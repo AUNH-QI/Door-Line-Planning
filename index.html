@@ -21,13 +21,13 @@
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </div>
         <div class="flex flex-col gap-6 w-full items-center">
-            <div onclick="switchTab('planning')" id="nav-planning" class="p-3 bg-white/20 rounded-xl cursor-pointer shadow transition" title="Daily Door Planning">
+            <div onclick="switchTab('planning')" id="nav-planning" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="Daily Door Planning">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
             </div>
             <div onclick="switchTab('doors')" id="nav-doors" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="จำนวนประตูที่ต้องผลิต">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
             </div>
-            <div onclick="switchTab('dailystock')" id="nav-dailystock" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="Daily Stock">
+            <div onclick="switchTab('dailystock')" id="nav-dailystock" class="p-3 bg-white/20 rounded-xl cursor-pointer shadow" title="Daily Stock">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
             </div>
             <div onclick="switchTab('master')" id="nav-master" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="DATA BASE">
@@ -40,66 +40,35 @@
     <div class="flex-1 ml-20 p-8">
         
         <!-- View: Daily Door Planning -->
-        <div id="view-planning" class="view-section">
-            <div class="custom-card rounded-2xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div id="view-planning" class="view-section hidden">
+            <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-indigo-600 uppercase bg-indigo-50 px-3 py-1 rounded-full">PRODUCTION LINE MANAGEMENT</span>
                     <h1 class="text-3xl font-extrabold text-gray-800 mt-2">Daily Door Planning</h1>
                 </div>
                 <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-xl border border-gray-200">
                     <button onclick="switchLine('Line A')" id="btn-Line-A" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow">Line A</button>
-                    <button onclick="switchLine('Line B')" id="btn-Line-B" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-gray-800">Line B</button>
-                    <button onclick="switchLine('Line C')" id="btn-Line-C" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-gray-800">Line C</button>
+                    <button onclick="switchLine('Line B')" id="btn-Line-B" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600">Line B</button>
+                    <button onclick="switchLine('Line C')" id="btn-Line-C" class="line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600">Line C</button>
                 </div>
             </div>
 
-            <!-- New Daily Door Planning Table Structure -->
-            <div class="custom-card rounded-2xl p-6 shadow-lg mb-8">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div class="custom-card rounded-2xl p-6 shadow-lg">
+                <div class="flex justify-between items-center mb-6">
                     <h2 id="tableTitle" class="text-xl font-bold text-gray-800">ตารางวางแผนการผลิต: Line A</h2>
-                    <div class="flex items-center gap-3">
-                        <button onclick="loadPlanningData()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition flex items-center gap-2 shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            รีเฟรช
-                        </button>
-                        <button onclick="savePlanningData()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition flex items-center gap-2 shadow-md">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                            บันทึกข้อมูล
-                        </button>
-                    </div>
+                    <button onclick="addRow()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md">+ เพิ่มแถวการผลิต</button>
                 </div>
-                
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs">
+                    <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-gray-200 text-gray-700 bg-gray-100 text-center">
-                                <th class="p-3 border-r text-left">Plan date</th>
-                                <th class="p-3 border-r">Line</th>
-                                <th class="p-3 border-r text-left">Door model</th>
-                                <th class="p-3 border-r text-left">Colour</th>
-                                <th class="p-3 border-r text-left">Type</th>
-                                <th class="p-3 border-r text-indigo-700 font-bold bg-indigo-50/50">☀️ Day</th>
-                                <th class="p-3 border-r text-purple-700 font-bold bg-purple-50/50">🌙 Night</th>
-                                <th class="p-3 border-r font-bold text-gray-800 bg-gray-200/50">Total</th>
-                                <th class="p-3 border-r">Jig No.</th>
-                                <th class="p-3 border-r">Pallet No.</th>
-                                <th class="p-3 text-center">Action</th>
+                            <tr class="border-b border-gray-200 text-indigo-600 text-sm bg-gray-50">
+                                <th class="p-3.5">Model</th><th class="p-3.5">Door</th><th class="p-3.5 text-center">Round/HR</th>
+                                <th class="p-3.5 text-center">Time</th><th class="p-3.5 text-center">Pallet</th><th class="p-3.5 text-center">Jig</th>
+                                <th class="p-3.5 text-center text-indigo-700 font-bold">Plan (Auto)</th><th class="p-3.5 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="planningTableBody" class="divide-y divide-gray-100 text-center">
-                            <!-- Rows will be dynamically populated or added via script -->
-                        </tbody>
+                        <tbody id="tableBody" class="divide-y divide-gray-100 text-sm"></tbody>
                     </table>
-                </div>
-
-                <div class="mt-6 flex justify-between items-center">
-                    <button onclick="addPlanningRow()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
-                        เพิ่มแถวแผนการผลิต
-                    </button>
-                    <div class="text-sm font-medium text-gray-600">
-                        ยอดรวมกะกลางวัน: <span id="totalDayPlan" class="font-bold text-indigo-600">0</span> | ยอดรวมกะกลางคืน: <span id="totalNightPlan" class="font-bold text-purple-600">0</span> | รวมทั้งหมด: <span id="totalAllPlan" class="font-bold text-gray-800">0</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -197,7 +166,7 @@
         </div>
 
         <!-- View: Daily Stock Management -->
-        <div id="view-dailystock" class="view-section hidden">
+        <div id="view-dailystock" class="view-section">
             <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
                 <div>
                     <span class="text-xs font-bold tracking-widest text-teal-600 uppercase bg-teal-50 px-3 py-1 rounded-full">INVENTORY MANAGEMENT</span>
@@ -269,6 +238,582 @@
                                 <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
                                 <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
                             </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UXAE00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DP2TFS1:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Silver</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UX8E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DP3TD1:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">GE Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Black</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UXBE00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DP4TW2:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café White</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UX9E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DM5TS5:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Glass Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Gold</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Glass</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ8E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">PJE23BYWDFS:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">Profile</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ6E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">PJD23BYWDFS:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">Profile</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver(DID)</td>
+                                <td class="p-2.5 border-r font-semibold text-blue-600 bg-indigo-50/20">DND</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ7E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DP4WW2:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café White</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ9E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DP3WD1:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">GE Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Black</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZAE00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DP2WDS1:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Silver</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZBE00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DM5WS5:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Glass Door</td>
+                                <td class="p-2.5 border-r text-gray-600">GE Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Glass</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ตารางที่ 2: TM (type: R, F) -->
+            <div class="custom-card rounded-2xl p-6 shadow-lg mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">ตารางบันทึกสต็อกฝา: TM (type : R, F)</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th class="p-3 border-r text-left">fg_code</th>
+                                <th class="p-3 border-r text-left">commercial_model</th>
+                                <th class="p-3 border-r">group</th>
+                                <th class="p-3 border-r">material</th>
+                                <th class="p-3 border-r">colour</th>
+                                <th colspan="2" class="p-2 border-r bg-teal-50 text-teal-900 font-bold border-b">type (Stock Count)</th>
+                                <th class="p-3 border-r bg-blue-50 text-blue-900 font-bold">door_color</th>
+                                <th colspan="4" class="p-2 bg-indigo-50 text-indigo-900 font-bold border-b">door_model</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-center">
+                                <th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th>
+                                <th class="p-2 border-r bg-teal-50/50 font-semibold">R</th>
+                                <th class="p-2 border-r bg-teal-50/50 font-semibold">F</th>
+                                <th class="p-2 border-r bg-blue-50/50"></th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">R</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">F</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">&lt;blank&gt;</th>
+                                <th class="p-2 bg-indigo-50/50 font-semibold">&lt;blank&gt;</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-center">
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">common</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Gloss Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">BB</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">common</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">FS</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">common</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM10/12</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BL07F0E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">GPS14FGZBB</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Gloss Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">BB</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM14</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM14</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BL07F1E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">GPS14FYZFS</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">FS</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM14</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM14</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BL07F2E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">GPS14FGZWW</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM14</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM14</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BL0771E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">GPS19KYZFS</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">FS</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM19/21</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM19/21</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BL0772E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">GPS19KGZWW</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM19/21</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM19/21</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BL0773E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">GPS19KGZBB</td>
+                                <td class="p-2.5 border-r text-gray-600">GE</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Gloss Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">BB</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM19/21</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">TM19/21</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ตารางที่ 3: T-Door (type: RR, RL, FR, FL) -->
+            <div class="custom-card rounded-2xl p-6 shadow-lg mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">ตารางบันทึกสต็อกฝา: T-Door (type : RR, RL, FR, FL)</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th class="p-3 border-r text-left">fg_code</th>
+                                <th class="p-3 border-r text-left">commercial_model</th>
+                                <th class="p-3 border-r">group</th>
+                                <th class="p-3 border-r">material</th>
+                                <th class="p-3 border-r">colour</th>
+                                <th colspan="4" class="p-2 border-r bg-teal-50 text-teal-900 font-bold border-b">type (Stock Count)</th>
+                                <th class="p-3 border-r bg-blue-50 text-blue-900 font-bold">door_color</th>
+                                <th colspan="4" class="p-2 bg-indigo-50 text-indigo-900 font-bold border-b">door_model</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-center">
+                                <th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th>
+                                <th class="p-2 border-r bg-teal-50/50 font-semibold">RR</th>
+                                <th class="p-2 border-r bg-teal-50/50 font-semibold">RL</th>
+                                <th class="p-2 border-r bg-teal-50/50 font-semibold">FR</th>
+                                <th class="p-2 border-r bg-teal-50/50 font-semibold">FL</th>
+                                <th class="p-2 border-r bg-blue-50/50"></th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">RR</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">RL</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">FR</th>
+                                <th class="p-2 bg-indigo-50/50 font-semibold">FL</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-center">
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BC1104E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">CAE28DM5TDS5:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Glass Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Gold</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Glass</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                                <td class="p-2 text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BC1105E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">PAD28BYTDFS:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">Profile</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver(DID)</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                                <td class="p-2 text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BC1103E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">PAE28BYTCFS:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">Profile</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                                <td class="p-2 text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BC12Y3E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">PHD23BYWCFS:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">Profile</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver(DID)</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                                <td class="p-2 text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">BC12Y4E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">HE23DM5WCS5:HTC</td>
+                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
+                                <td class="p-2.5 border-r text-gray-600">Glass Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Gold</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Glass</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                                <td class="p-2 text-gray-600 bg-indigo-50/20">BM 28 FL FR</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ตารางที่ 4: FUF (type: R) -->
+            <div class="custom-card rounded-2xl p-6 shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">ตารางบันทึกสต็อกฝา: FUF (type : R)</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th class="p-3 border-r text-left">fg_code</th>
+                                <th class="p-3 border-r text-left">commercial_model</th>
+                                <th class="p-3 border-r">group</th>
+                                <th class="p-3 border-r">material</th>
+                                <th class="p-3 border-r">colour</th>
+                                <th class="p-2 border-r bg-teal-50 text-teal-900 font-bold border-b">type (Stock Count)</th>
+                                <th class="p-3 border-r bg-blue-50 text-blue-900 font-bold">door_color</th>
+                                <th colspan="4" class="p-2 bg-indigo-50 text-indigo-900 font-bold border-b">door_model</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-center">
+                                <th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th><th class="p-2 border-r"></th>
+                                <th class="p-2 border-r bg-teal-50/50 font-semibold">R</th>
+                                <th class="p-2 border-r bg-blue-50/50"></th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">R</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">&lt;blank&gt;</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">&lt;blank&gt;</th>
+                                <th class="p-2 bg-indigo-50/50 font-semibold">&lt;blank&gt;</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-center">
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B30MY2E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF14 Q</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF14</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B30MY0E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF14 S</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF14</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B30MY1E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF14 D</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF14</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B30MY3E00</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF14 L</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF14</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">common</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF18/22 Q</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF18/22</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">common</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF18/22 S</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF18/22</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">common</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF18/22 D</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF18/22</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">common</td>
+                                <td class="p-2.5 border-r text-gray-800 text-left">FUF18/22 L</td>
+                                <td class="p-2.5 border-r text-gray-400">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
+                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
+                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">WW</td>
+                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">FUF18/22</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 border-r text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                                <td class="p-2.5 text-gray-400 bg-indigo-50/20">&lt;blank&gt;</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -303,22 +848,31 @@
                 </div>
                 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
+                    <table class="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr class="border-b border-gray-200 text-gray-700 bg-gray-100">
-                                <th class="p-3 border-r">FG Code</th>
-                                <th class="p-3 border-r">Commercial Model</th>
-                                <th class="p-3 border-r">Group</th>
-                                <th class="p-3 border-r">Material</th>
-                                <th class="p-3 border-r">Colour</th>
-                                <th class="p-3 border-r">Door Color</th>
-                                <th class="p-3">Door Model</th>
+                                <th class="p-3 border-r">fg_code</th>
+                                <th class="p-3 border-r">refrigerator_model</th>
+                                <th class="p-3 border-r">refrigerator_color</th>
+                                <th class="p-3 border-r">commercial_model</th>
+                                <th class="p-3 border-r">door_model</th>
+                                <th class="p-3 border-r">door_color</th>
+                                <th class="p-3 border-r">door_type</th>
+                                <th class="p-3 border-r">quantity_per_unit</th>
+                                <th class="p-3 border-r">line</th>
                             </tr>
                         </thead>
                         <tbody id="masterTableBody" class="divide-y divide-gray-100">
-                            <tr><td colspan="7" class="p-4 text-center text-gray-500">กำลังโหลดข้อมูล...</td></tr>
+                            <tr><td colspan="9" class="p-6 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">ก่อนหน้า</button>
+                    <span id="pageInfo" class="text-sm font-medium text-gray-600">หน้าที่ 1 / 1</span>
+                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">ถัดไป</button>
                 </div>
             </div>
         </div>
@@ -326,135 +880,442 @@
     </div>
 
     <script>
-        // Tab & Line Switching Logic
-        function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById('view-' + tabId).classList.remove('hidden');
-            
-            // Update sidebar nav active state
-            ['planning', 'doors', 'dailystock', 'master'].forEach(t => {
-                const nav = document.getElementById('nav-' + t);
-                if(nav) {
-                    if(t === tabId) {
-                        nav.className = "p-3 bg-white/20 rounded-xl cursor-pointer shadow transition";
-                    } else {
-                        nav.className = "p-3 hover:bg-white/10 rounded-xl cursor-pointer transition";
-                    }
-                }
-            });
-        }
+        const SUPABASE_URL = 'https://fslgzlowdcxtnxppipdq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzbGd6bG93ZGN4dG54cHBpcGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MTM3MTksImV4cCI6MjEwNDA4OTcxOX0.9PWrY1SKSvMfLPI_S0a3jgvqIxpISzlsR2TlH2oysyo';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        let productionData = { 'Line A': [], 'Line B': [], 'Line C': [] };
         let currentLine = 'Line A';
-        function switchLine(line) {
-            currentLine = line;
-            ['Line A', 'Line B', 'Line C'].forEach(l => {
-                const btn = document.getElementById('btn-' + l.replace(' ', '-'));
-                if(btn) {
-                    if(l === line) {
-                        btn.className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition bg-indigo-600 text-white shadow";
-                    } else {
-                        btn.className = "line-tab-btn px-4 py-2 rounded-lg font-bold text-sm transition text-gray-600 hover:text-gray-800";
-                    }
+        let fullMasterCache = [];
+        let filteredMasterCache = [];
+        let currentPage = 1;
+        let pageSize = 50;
+
+        function switchTab(tabName) {
+            document.getElementById('view-planning').classList.add('hidden');
+            document.getElementById('view-doors').classList.add('hidden');
+            document.getElementById('view-dailystock').classList.add('hidden');
+            document.getElementById('view-master').classList.add('hidden');
+
+            document.getElementById('nav-planning').classList.remove('bg-white/20', 'shadow');
+            document.getElementById('nav-doors').classList.remove('bg-white/20', 'shadow');
+            document.getElementById('nav-dailystock').classList.remove('bg-white/20', 'shadow');
+            document.getElementById('nav-master').classList.remove('bg-white/20', 'shadow');
+
+            if(tabName === 'planning') {
+                document.getElementById('view-planning').classList.remove('hidden');
+                document.getElementById('nav-planning').classList.add('bg-white/20', 'shadow');
+            } else if(tabName === 'doors') {
+                document.getElementById('view-doors').classList.remove('hidden');
+                document.getElementById('nav-doors').classList.add('bg-white/20', 'shadow');
+                if(document.getElementById('doorReqTableBody').children.length === 0) {
+                    addDoorRequirementRow();
+                    addDoorRequirementRow();
+                    addDoorRequirementRow();
                 }
-            });
-            const titleEl = document.getElementById('tableTitle');
-            if(titleEl) titleEl.innerText = 'ตารางวางแผนการผลิต: ' + line;
-            loadPlanningData();
+            } else if(tabName === 'dailystock') {
+                document.getElementById('view-dailystock').classList.remove('hidden');
+                document.getElementById('nav-dailystock').classList.add('bg-white/20', 'shadow');
+            } else if(tabName === 'master') {
+                document.getElementById('view-master').classList.remove('hidden');
+                document.getElementById('nav-master').classList.add('bg-white/20', 'shadow');
+                if (fullMasterCache.length === 0) {
+                    fetchMasterStockData();
+                } else {
+                    renderMasterTable();
+                }
+            }
         }
 
-        // Planning Table Row Management & Calculations
-        function addPlanningRow(data = {}) {
-            const tbody = document.getElementById('planningTableBody');
-            if(!tbody) return;
-            const tr = document.createElement('tr');
-            tr.className = "hover:bg-gray-50 transition";
+        async function fetchMasterStockData() {
+            const tbody = document.getElementById('masterTableBody');
+            tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">กำลังโหลดข้อมูลจากฐานข้อมูล...</td></tr>`;
             
-            const todayStr = new Date().toISOString().split('T')[0];
-            const planDate = data.plan_date || todayStr;
-            const line = data.line || currentLine;
-            const doorModel = data.door_model || '';
-            const colour = data.colour || '';
-            const type = data.type || '';
-            const dayPlan = data.day_plan !== undefined ? data.day_plan : 0;
-            const nightPlan = data.night_plan !== undefined ? data.night_plan : 0;
-            const jigNo = data.jig_no || '';
-            const palletNo = data.pallet_no || '';
-            const total = Number(dayPlan) + Number(nightPlan);
+            try {
+                const { data, error } = await supabaseClient
+                    .from('production_planning_master')
+                    .select('*')
+                    .order('fg_code', { ascending: true });
+                
+                if (error) {
+                    tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+                    return;
+                }
+                
+                fullMasterCache = data || [];
+                filteredMasterCache = [...fullMasterCache];
+                currentPage = 1;
+                renderMasterTable();
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>`;
+            }
+        }
 
-            tr.innerHTML = `
-                <td class="p-2.5 border-r"><input type="date" class="w-full p-1 border rounded text-center text-xs" value="${planDate}"></td>
-                <td class="p-2.5 border-r font-medium text-gray-700">${line}</td>
-                <td class="p-2.5 border-r"><input type="text" class="w-full p-1 border rounded text-xs" placeholder="ระบุรุ่นฝา..." value="${doorModel}"></td>
-                <td class="p-2.5 border-r"><input type="text" class="w-full p-1 border rounded text-xs" placeholder="ระบุสี..." value="${colour}"></td>
-                <td class="p-2.5 border-r"><input type="text" class="w-full p-1 border rounded text-xs" placeholder="ระบุ Type..." value="${type}"></td>
-                <td class="p-2.5 border-r bg-indigo-50/20"><input type="number" class="w-20 p-1 border rounded text-center text-xs font-bold text-indigo-600 day-input" value="${dayPlan}" oninput="updateRowTotal(this)"></td>
-                <td class="p-2.5 border-r bg-purple-50/20"><input type="number" class="w-20 p-1 border rounded text-center text-xs font-bold text-purple-600 night-input" value="${nightPlan}" oninput="updateRowTotal(this)"></td>
-                <td class="p-2.5 border-r font-bold text-gray-800 bg-gray-50 row-total">${total}</td>
-                <td class="p-2.5 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs" placeholder="Jig..." value="${jigNo}"></td>
-                <td class="p-2.5 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs" placeholder="Pallet..." value="${palletNo}"></td>
-                <td class="p-2.5 text-center">
-                    <button onclick="deletePlanningRow(this)" class="text-red-500 hover:text-red-700 p-1 rounded transition" title="ลบแถว">
-                        <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
+        function renderMasterTable() {
+            const tbody = document.getElementById('masterTableBody');
+            tbody.innerHTML = '';
+
+            const totalItems = filteredMasterCache.length;
+            if (totalItems === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">ไม่พบข้อมูลในระบบ Stock</td></tr>`;
+                document.getElementById('masterCount').textContent = `แสดง 0 ถึง 0 จากทั้งหมด 0 รายการ`;
+                document.getElementById('pageInfo').textContent = `หน้าที่ 1 / 1`;
+                document.getElementById('prevPageBtn').disabled = true;
+                document.getElementById('nextPageBtn').disabled = true;
+                return;
+            }
+
+            let startIdx = 0;
+            let endIdx = totalItems;
+            let totalPages = 1;
+
+            if (pageSize !== 'all') {
+                const ps = parseInt(pageSize);
+                totalPages = Math.ceil(totalItems / ps);
+                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) currentPage = 1;
+
+                startIdx = (currentPage - 1) * ps;
+                endIdx = Math.min(startIdx + ps, totalItems);
+            } else {
+                currentPage = 1;
+                totalPages = 1;
+            }
+
+            const pageItems = filteredMasterCache.slice(startIdx, endIdx);
+
+            pageItems.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.refrigerator_model || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.refrigerator_color || '-'}</td>
+                    <td class="p-3 border-r font-medium text-gray-800">${item.commercial_model || '-'}</td>
+                    <td class="p-3 border-r font-semibold text-blue-600">${item.door_model || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.door_color || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.door_type || '-'}</td>
+                    <td class="p-3 border-r text-center font-bold text-emerald-600">${item.quantity_per_unit ?? '-'}</td>
+                    <td class="p-3 text-gray-700">${item.line || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('masterCount').textContent = `แสดง ${startIdx + 1} ถึง ${endIdx} จากทั้งหมด ${totalItems} รายการ`;
+            document.getElementById('pageInfo').textContent = `หน้าที่ ${currentPage} / ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = (currentPage <= 1 || pageSize === 'all');
+            document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages || pageSize === 'all');
+        }
+
+        function handleSearchInput() {
+            const keyword = document.getElementById('masterSearch').value.toLowerCase();
+            filteredMasterCache = fullMasterCache.filter(item => {
+                return (
+                    (item.fg_code && item.fg_code.toLowerCase().includes(keyword)) ||
+                    (item.commercial_model && item.commercial_model.toLowerCase().includes(keyword)) ||
+                    (item.door_model && item.door_model.toLowerCase().includes(keyword)) ||
+                    (item.refrigerator_color && item.refrigerator_color.toLowerCase().includes(keyword))
+                );
+            });
+            currentPage = 1;
+            renderMasterTable();
+        }
+
+        function changePageSize() {
+            pageSize = document.getElementById('pageSizeSelect').value;
+            currentPage = 1;
+            renderMasterTable();
+        }
+
+        function changePage(direction) {
+            if (pageSize === 'all') return;
+            const ps = parseInt(pageSize);
+            const totalPages = Math.ceil(filteredMasterCache.length / ps);
+            
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            renderMasterTable();
+        }
+
+        function switchLine(lineName) {
+            currentLine = lineName;
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            (productionData[currentLine] || []).forEach(item => addRowData(item));
+        }
+
+        function addRowData(data) {
+            const tbody = document.getElementById('tableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="p-3">${data.model || ''}</td><td class="p-3">${data.door || ''}</td>
+                <td class="p-3 text-center"><input type="number" class="round-hr w-20 border rounded p-1 text-center" value="${data.roundHr || 10}"></td>
+                <td class="p-3 text-center"><input type="number" class="time-val w-20 border rounded p-1 text-center" value="${data.time || 8}"></td>
+                <td class="p-3 text-center"><input type="number" class="pallet w-20 border rounded p-1 text-center" value="${data.pallet || 2}"></td>
+                <td class="p-3 text-center"><input type="number" class="jig w-20 border rounded p-1 text-center" value="${data.jig || 1}"></td>
+                <td class="p-3 font-bold text-indigo-600 text-center plan-val">80</td>
+                <td class="p-3 text-center">-</td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        function addRow() { addRowData({ model: 'New Model', door: 'R' }); }
+
+        async function fetchMasterData(codeVal) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('production_planning_master')
+                    .select('*')
+                    .ilike('fg_code', codeVal.trim());
+                if (error) return [];
+                return data || [];
+            } catch (err) {
+                return [];
+            }
+        }
+
+        async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
+            if (!matchedRecords || matchedRecords.length === 0) return;
+
+            const groupId = 'group_' + Date.now() + '_' + Math.random();
+            row.setAttribute('data-group', groupId);
+
+            const primary = matchedRecords[0];
+            row.querySelector('.ref-code').value = primary.fg_code || '';
+            row.querySelector('.ref-model').value = primary.commercial_model || '';
+            row.querySelector('.ref-platform').value = primary.refrigerator_model || '';
+            row.querySelector('.ref-colour').value = primary.refrigerator_color || '';
+            
+            row.querySelector('.door-model').value = primary.door_model || '';
+            row.querySelector('.door-colour').value = primary.door_color || '';
+            row.querySelector('.door-type').value = primary.door_type || '';
+            row.querySelector('.door-line').value = primary.line || '';
+
+            let initialPlanQty = specifiedPlanQty !== null ? specifiedPlanQty : (row.querySelector('.plan-qty').value || '');
+            row.querySelector('.plan-qty').value = initialPlanQty;
+            calcDoorReq(row.querySelector('.plan-qty'));
+
+            if (matchedRecords.length > 1) {
+                const tbody = document.getElementById('doorReqTableBody');
+                for (let i = 1; i < matchedRecords.length; i++) {
+                    const rec = matchedRecords[i];
+                    const newRow = document.createElement('tr');
+                    newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
+                    newRow.setAttribute('data-group', groupId);
+                    newRow.innerHTML = `
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" readonly></td>
+                        <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${initialPlanQty}" oninput="calcDoorReq(this)"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.door_color || ''}" readonly></td>
+                        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}" readonly></td>
+                        <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
+                        <td class="p-2 flex items-center justify-center gap-1">
+                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || ''}" readonly>
+                            <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
+                        </td>
+                    `;
+                    tbody.insertBefore(newRow, row.nextSibling);
+                    calcDoorReq(newRow.querySelector('.plan-qty'));
+                }
+            }
+            updateKPIs();
+        }
+
+        async function handleCodeInput(event, inputElement) {
+            const row = inputElement.closest('tr');
+            const val = inputElement.value.trim();
+            if (val.length < 3) return;
+            const records = await fetchMasterData(val);
+            if (records.length > 0) {
+                await populateRowData(row, records);
+            }
+        }
+
+        async function handleKey(event, inputElement) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const row = inputElement.closest('tr');
+                const val = inputElement.value.trim();
+                const records = await fetchMasterData(val);
+                if (records.length > 0) {
+                    await populateRowData(row, records);
+                }
+            }
+        }
+
+        async function handleExcelPaste(event, inputElement) {
+            const clipboardData = event.clipboardData || window.clipboardData;
+            const pastedData = clipboardData.getData('Text');
+            if (pastedData.includes('\t') || pastedData.includes('\n')) {
+                event.preventDefault();
+                const lines = pastedData.split('\n').filter(r => r.trim() !== '');
+                
+                document.querySelectorAll('.door-req-row').forEach(r => {
+                    if(!r.querySelector('.ref-code').value.trim() && !r.querySelector('.plan-qty').value.trim()) r.remove();
+                });
+
+                let currentRow = inputElement.closest('tr');
+                if(!currentRow || !document.body.contains(currentRow)) {
+                    addDoorRequirementRow();
+                    const remainingRows = document.querySelectorAll('.door-req-row');
+                    currentRow = remainingRows[remainingRows.length - 1];
+                }
+
+                for (let index = 0; index < lines.length; index++) {
+                    const cols = lines[index].split('\t').map(c => c.trim());
+                    const codeVal = cols[0] || '';
+                    const planQtyVal = cols[1] ? parseFloat(cols[1]) : null;
+                    if (!codeVal) continue;
+
+                    let targetRow = currentRow;
+                    if (index > 0) {
+                        addDoorRequirementRow();
+                        const allRows = document.querySelectorAll('.door-req-row');
+                        targetRow = allRows[allRows.length - 1];
+                    }
+
+                    targetRow.querySelector('.ref-code').value = codeVal;
+                    const records = await fetchMasterData(codeVal);
+                    if (records.length > 0) {
+                        await populateRowData(targetRow, records, planQtyVal);
+                    }
+                }
+            }
+        }
+
+        function addDoorRequirementRow(prefill = {}) {
+            const tbody = document.getElementById('doorReqTableBody');
+            const newRow = document.createElement('tr');
+            const groupId = 'group_' + Date.now() + '_' + Math.random();
+            newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
+            newRow.setAttribute('data-group', groupId);
+            newRow.innerHTML = `
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
+                <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty !== undefined ? prefill.planQty : ''}" oninput="calcDoorReq(this)"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.door_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.door_color || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}" readonly></td>
+                <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
+                <td class="p-2 flex items-center justify-center gap-1">
+                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || ''}" readonly>
+                    <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                 </td>
             `;
-            tbody.appendChild(tr);
-            calculatePlanningTotals();
+            tbody.appendChild(newRow);
+            calcDoorReq(newRow.querySelector('.plan-qty'));
         }
 
-        function updateRowTotal(input) {
-            const tr = input.closest('tr');
-            const dayVal = parseFloat(tr.querySelector('.day-input').value) || 0;
-            const nightVal = parseFloat(tr.querySelector('.night-input').value) || 0;
-            tr.querySelector('.row-total').innerText = dayVal + nightVal;
-            calculatePlanningTotals();
+        function calcDoorReq(element) {
+            const row = element.closest('tr');
+            const groupId = row.getAttribute('data-group');
+            const newVal = element.value;
+
+            if (groupId) {
+                const groupRows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
+                groupRows.forEach(r => {
+                    const targetInput = r.querySelector('.plan-qty');
+                    if (targetInput && targetInput !== element) targetInput.value = newVal;
+                    const pQty = parseFloat(newVal) || 0;
+                    r.querySelector('.total-needed').textContent = pQty.toLocaleString();
+                });
+            } else {
+                const planQty = parseFloat(newVal) || 0;
+                row.querySelector('.total-needed').textContent = planQty.toLocaleString();
+            }
+            updateKPIs();
         }
 
-        function deletePlanningRow(btn) {
-            btn.closest('tr').remove();
-            calculatePlanningTotals();
-        }
+        function updateKPIs() {
+            let totalPlanRef = 0, totalPlanDoor = 0, aDoor = 0, bDoor = 0, cDoor = 0, dnd = 0;
+            const rows = document.querySelectorAll('.door-req-row');
+            const processedGroups = new Set();
+            const summaryMap = {};
 
-        function calculatePlanningTotals() {
-            let totalDay = 0;
-            let totalNight = 0;
-            document.querySelectorAll('#planningTableBody tr').forEach(tr => {
-                const dayVal = parseFloat(tr.querySelector('.day-input')?.value) || 0;
-                const nightVal = parseFloat(tr.querySelector('.night-input')?.value) || 0;
-                totalDay += dayVal;
-                totalNight += nightVal;
+            rows.forEach(row => {
+                const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
+                const totalNeeded = parseFloat(row.querySelector('.total-needed').textContent.replace(/,/g, '')) || 0;
+                const line = (row.querySelector('.door-line').value || '').trim();
+                const lineLower = line.toLowerCase();
+                const groupId = row.getAttribute('data-group') || row;
+
+                const doorModel = (row.querySelector('.door-model').value || '').trim();
+                const doorColour = (row.querySelector('.door-colour').value || '').trim();
+                const doorType = (row.querySelector('.door-type').value || '').trim();
+
+                if (doorModel) {
+                    const key = `${doorModel}_${doorColour}_${doorType}_${line}`;
+                    if (!summaryMap[key]) {
+                        summaryMap[key] = { model: doorModel, colour: doorColour, type: doorType, line: line, total: 0 };
+                    }
+                    summaryMap[key].total += totalNeeded;
+                }
+
+                if (!processedGroups.has(groupId)) {
+                    processedGroups.add(groupId);
+                    totalPlanRef += planQty;
+                }
+
+                totalPlanDoor += totalNeeded;
+                if (lineLower.includes('dnd')) dnd += totalNeeded;
+                else if (lineLower.includes('a')) aDoor += totalNeeded;
+                else if (lineLower.includes('b')) bDoor += totalNeeded;
+                else if (lineLower.includes('c')) cDoor += totalNeeded;
             });
-            const dEl = document.getElementById('totalDayPlan');
-            const nEl = document.getElementById('totalNightPlan');
-            const aEl = document.getElementById('totalAllPlan');
-            if(dEl) dEl.innerText = totalDay.toLocaleString();
-            if(nEl) nEl.innerText = totalNight.toLocaleString();
-            if(aEl) aEl.innerText = (totalDay + totalNight).toLocaleString();
+
+            document.getElementById('kpi-plan-ref').textContent = totalPlanRef.toLocaleString();
+            document.getElementById('kpi-plan-door').textContent = totalPlanDoor.toLocaleString();
+            document.getElementById('kpi-a-door').textContent = aDoor.toLocaleString();
+            document.getElementById('kpi-b-door').textContent = bDoor.toLocaleString();
+            document.getElementById('kpi-c-door').textContent = cDoor.toLocaleString();
+            document.getElementById('kpi-dnd').textContent = dnd.toLocaleString();
+
+            renderSummaryTable(summaryMap);
         }
 
-        function loadPlanningData() {
-            const tbody = document.getElementById('planningTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            const sampleData = [
-                { plan_date: new Date().toISOString().split('T')[0], line: currentLine, door_model: 'BM 23 29', colour: 'Stainless', type: 'RR', day_plan: 120, night_plan: 130, jig_no: 'J-01', pallet_no: 'P-01' },
-                { plan_date: new Date().toISOString().split('T')[0], line: currentLine, door_model: 'BM 23 29', colour: 'Stainless', type: 'RL', day_plan: 100, night_plan: 110, jig_no: 'J-02', pallet_no: 'P-02' }
-            ];
-            sampleData.forEach(d => addPlanningRow(d));
+        function renderSummaryTable(summaryMap) {
+            const summaryTbody = document.getElementById('summaryTableBody');
+            summaryTbody.innerHTML = '';
+            const keys = Object.keys(summaryMap);
+            if (keys.length === 0) {
+                summaryTbody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-gray-400">ยังไม่มีข้อมูลสรุป</td></tr>`;
+                return;
+            }
+
+            keys.forEach(key => {
+                const item = summaryMap[key];
+                const dayVal = item.total / 2;
+                const nightVal = item.total / 2;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 border-r font-medium text-gray-800">${item.model}</td>
+                    <td class="p-3 border-r text-gray-600">${item.colour}</td>
+                    <td class="p-3 border-r text-gray-600">${item.type}</td>
+                    <td class="p-3 border-r text-gray-700 font-semibold">${item.line}</td>
+                    <td class="p-3 border-r text-amber-600 font-bold">${dayVal % 1 === 0 ? dayVal.toLocaleString() : dayVal.toFixed(1)}</td>
+                    <td class="p-3 border-r text-indigo-600 font-bold">${nightVal % 1 === 0 ? nightVal.toLocaleString() : nightVal.toFixed(1)}</td>
+                    <td class="p-3 font-bold text-emerald-700">${item.total.toLocaleString()}</td>
+                `;
+                summaryTbody.appendChild(tr);
+            });
         }
 
-        function savePlanningData() {
-            alert('บันทึกข้อมูล Daily Door Planning ของ ' + currentLine + ' เรียบร้อยแล้ว!');
-        }
-
-        function addDoorRequirementRow() {}
-        function fetchMasterStockData() {}
-        function handleSearchInput() {}
-        function changePageSize() {}
-
-        window.onload = function() {
-            loadPlanningData();
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            switchLine('Line A');
+            switchTab('dailystock');
+        });
     </script>
 </body>
 </html>
