@@ -813,5 +813,14 @@
             switchTab('doors');
         });
     </script>
+    <script>
+function addDoorRequirementRow() {
+  const tbody = document.querySelector("table tbody") || document.querySelector("tbody");
+  if (!tbody) return;
+  const newRow = document.createElement("tr");
+  newRow.innerHTML = <br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="code"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="number" class="w-full p-1 border rounded" placeholder="qty"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="model"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="platform"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="colour"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="door model"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="door colour"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="type"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="number" class="w-full p-1 border rounded" placeholder="total"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;input type="text" class="w-full p-1 border rounded" placeholder="line"&gt;&lt;/td&gt;<br/> &nbsp;&nbsp;;
+  tbody.appendChild(newRow);
+}
+</script>
 </body>
 </html>
