@@ -174,7 +174,8 @@
                 </div>
             </div>
 
-            <div class="custom-card rounded-2xl p-6 shadow-lg">
+            <!-- ตารางที่ 1 (เดิม) -->
+            <div class="custom-card rounded-2xl p-6 shadow-lg mb-8">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-bold text-gray-800">ตารางบันทึกสต็อกฝา (Daily Stock)</h2>
                 </div>
@@ -226,181 +227,200 @@
                                 <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
                                 <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ตารางที่ 2 (เพิ่มใหม่ตามรูปที่ 2 เป๊ะๆ) -->
+            <div class="custom-card rounded-2xl p-6 shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">ตารางที่ 2 (เฉพาะ type R กับ F)</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th class="p-3 border-r text-left">fg_code</th>
+                                <th class="p-3 border-r text-left">commercial_model</th>
+                                <th class="p-3 border-r">group</th>
+                                <th class="p-3 border-r">material</th>
+                                <th class="p-3 border-r">colour</th>
+                                <th colspan="5" class="p-2 border-r bg-teal-50 text-teal-900 font-bold border-b">type</th>
+                                <th class="p-3 border-r bg-blue-50 text-blue-900 font-bold">door_color</th>
+                                <th colspan="4" class="p-2 bg-indigo-50 text-indigo-900 font-bold border-b">door_model</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50 text-center">
+                                <th class="p-2 border-r"></th>
+                                <th class="p-2 border-r"></th>
+                                <th class="p-2 border-r"></th>
+                                <th class="p-2 border-r"></th>
+                                <th class="p-2 border-r"></th>
+                                <th class="p-2 border-r bg-teal-50/50">R</th>
+                                <th class="p-2 border-r bg-teal-50/50">F</th>
+                                <th class="p-2 border-r bg-teal-50/50"></th>
+                                <th class="p-2 border-r bg-teal-50/50"></th>
+                                <th class="p-2 border-r bg-teal-50/50"></th>
+                                <th class="p-2 border-r bg-blue-50/50"></th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">R</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">F</th>
+                                <th class="p-2 border-r bg-indigo-50/50 font-semibold">null</th>
+                                <th class="p-2 bg-indigo-50/50 font-semibold">null</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-center">
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UX6E00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">PGE29BYTFFS:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">Profile</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">common</td>
+                                <td class="p-2.5 border-r text-left">TM10/12</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Gloss Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">BB</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM10/12</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM10/12</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UXAE00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DP2TFS1:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Silver</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">common</td>
+                                <td class="p-2.5 border-r text-left">TM10/12</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">FS</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM10/12</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM10/12</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UX8E00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DP3TD1:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">GE Black</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Black</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">common</td>
+                                <td class="p-2.5 border-r text-left">TM10/12</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">WW</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM10/12</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM10/12</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UXBE00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DP4TW2:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café White</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">BL07F0E00</td>
+                                <td class="p-2.5 border-r text-left">GPS14FGZBB</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Gloss Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">BB</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM14</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM14</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00UX9E00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CGE29DM5TS5:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Glass Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Gold</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Glass</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">BL07F1E00</td>
+                                <td class="p-2.5 border-r text-left">GPS14FYZFS</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">FS</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM14</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM14</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ8E00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">PJE23BWDFS:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">Profile</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">BL07F2E00</td>
+                                <td class="p-2.5 border-r text-left">GPS14FGZWW</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">WW</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM14</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM14</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ6E00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">PJD23BWDFS:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">Profile</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Silver(DID)</td>
-                                <td class="p-2.5 border-r font-semibold text-blue-600 bg-indigo-50/20">DND</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">BL0771E00</td>
+                                <td class="p-2.5 border-r text-left">GPS19KYZFS</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Stainless</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">FS</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM19/21</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM19/21</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ7E00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DP4WW2:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Haier White</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café White</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">BL0772E00</td>
+                                <td class="p-2.5 border-r text-left">GPS19KGZWW</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Haier White</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">WW</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM19/21</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM19/21</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                             <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZ9E00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DP3WD1:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">GE Black</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Black</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZAE00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DP2WDS1:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Metal Door</td>
-                                <td class="p-2.5 border-r text-gray-600">Stainless</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Silver</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="p-2.5 border-r font-bold text-indigo-600 text-left">B00XZBE00</td>
-                                <td class="p-2.5 border-r text-gray-800 text-left">CJE23DM5WS5:HTC</td>
-                                <td class="p-2.5 border-r text-gray-600">CAFE</td>
-                                <td class="p-2.5 border-r text-gray-600">Glass Door</td>
-                                <td class="p-2.5 border-r text-gray-600">GE Black</td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r bg-teal-50/20"><input type="number" class="w-16 p-1 border rounded text-center text-xs" value="0"></td>
-                                <td class="p-2.5 border-r font-medium text-gray-700 bg-blue-50/20">Café Glass</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 border-r text-gray-600 bg-indigo-50/20">BM 23 29</td>
-                                <td class="p-2.5 text-gray-600 bg-indigo-50/20">BM 23 29</td>
+                                <td class="p-2.5 border-r text-left">BL0773E00</td>
+                                <td class="p-2.5 border-r text-left">GPS19KGZBB</td>
+                                <td class="p-2.5 border-r">GE</td>
+                                <td class="p-2.5 border-r">Metal Door</td>
+                                <td class="p-2.5 border-r">Gloss Black</td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-teal-50/20"></td>
+                                <td class="p-2.5 border-r bg-blue-50/20 font-medium text-gray-700">BB</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM19/21</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-600">TM19/21</td>
+                                <td class="p-2.5 border-r bg-indigo-50/20 text-gray-400">null</td>
+                                <td class="p-2.5 bg-indigo-50/20 text-gray-400">null</td>
                             </tr>
                         </tbody>
                     </table>
