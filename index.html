@@ -116,6 +116,16 @@
                 </button>
             </div>
         </div>
+                <!-- Pagination Controls -->
+                <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                    <button id="prevPageBtn" onclick="changePage(-1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">ก่อนหน้า</button>
+                    <span id="pageInfo" class="text-sm font-medium text-gray-600">หน้าที่ 1 / 1</span>
+                    <button id="nextPageBtn" onclick="changePage(1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">ถัดไป</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <script>
         const SUPABASE_URL = 'https://fslgzlowdcxtnxppipdq.supabase.co';
@@ -128,6 +138,38 @@
         let filteredMasterCache = [];
         let currentPage = 1;
         let pageSize = 50;
+
+        function switchTab(tabName) {
+            document.getElementById('view-doors').classList.add('hidden');
+            document.getElementById('view-dailystock').classList.add('hidden');
+
+            document.getElementById('nav-doors').classList.remove('bg-white/20', 'shadow');
+            document.getElementById('nav-dailystock').classList.remove('bg-white/20', 'shadow');
+
+            if(tabName === 'planning') {
+                document.getElementById('view-planning').classList.remove('hidden');
+                document.getElementById('nav-planning').classList.add('bg-white/20', 'shadow');
+            } else if(tabName === 'doors') {
+                document.getElementById('view-doors').classList.remove('hidden');
+                document.getElementById('nav-doors').classList.add('bg-white/20', 'shadow');
+                if(document.getElementById('doorReqTableBody').children.length === 0) {
+                    addDoorRequirementRow();
+                    addDoorRequirementRow();
+                    addDoorRequirementRow();
+                }
+            } else if(tabName === 'dailystock') {
+                document.getElementById('view-dailystock').classList.remove('hidden');
+                document.getElementById('nav-dailystock').classList.add('bg-white/20', 'shadow');
+            } else if(tabName === 'master') {
+                document.getElementById('view-master').classList.remove('hidden');
+                document.getElementById('nav-master').classList.add('bg-white/20', 'shadow');
+                if (fullMasterCache.length === 0) {
+                    fetchMasterStockData();
+                } else {
+                    renderMasterTable();
+                }
+            }
+        }
 
         async function fetchMasterStockData() {
             const tbody = document.getElementById('masterTableBody');
@@ -515,6 +557,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            switchLine('Line A');
+            switchTab('dailystock');
         });
     </script>
 </body>
