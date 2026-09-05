@@ -834,389 +834,354 @@
             }
         }
 
-        async function fetchMasterStockData() {
-            const tbody = document.getElementById('masterTableBody');
-            tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">กำลังโหลดข้อมูลจากฐานข้อมูล...</td></tr>`;
-            
-            try {
-                const { data, error } = await supabaseClient
-                    .from('production_planning_master')
-                    .select('*')
-                    .order('fg_code', { ascending: true });
-                
-                if (error) {
-                    tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
-                    return;
-                }
-                
-                fullMasterCache = data || [];
-                filteredMasterCache = [...fullMasterCache];
-                currentPage = 1;
-                renderMasterTable();
-            } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>`;
-            }
+async function fetchMasterStockData() {
+    const tbody = document.getElementById('masterTableBody');
+    tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">กำลังโหลดข้อมูลจากฐานข้อมูล...</td></tr>`;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('production_planning_master')
+            .select('*')
+            .order('fg_code', { ascending: true });
+        
+        if (error) {
+            tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+            return;
         }
+        
+        fullMasterCache = data || [];
+        filteredMasterCache = [...fullMasterCache];
+        currentPage = 1;
+        renderMasterTable();
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>`;
+    }
+}
 
-        function renderMasterTable() {
-            const tbody = document.getElementById('masterTableBody');
-            tbody.innerHTML = '';
+function renderMasterTable() {
+    const tbody = document.getElementById('masterTableBody');
+    tbody.innerHTML = '';
 
-            const totalItems = filteredMasterCache.length;
-            if (totalItems === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">ไม่พบข้อมูลในระบบ Stock</td></tr>`;
-                document.getElementById('masterCount').textContent = `แสดง 0 ถึง 0 จากทั้งหมด 0 รายการ`;
-                document.getElementById('pageInfo').textContent = `หน้าที่ 1 / 1`;
-                document.getElementById('prevPageBtn').disabled = true;
-                document.getElementById('nextPageBtn').disabled = true;
-                return;
-            }
+    const totalItems = filteredMasterCache.length;
+    if (totalItems === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">ไม่พบข้อมูลในระบบ Stock</td></tr>`;
+        document.getElementById('masterCount').textContent = `แสดง 0 ถึง 0 จากทั้งหมด 0 รายการ`;
+        document.getElementById('pageInfo').textContent = `หน้าที่ 1 / 1`;
+        document.getElementById('prevPageBtn').disabled = true;
+        document.getElementById('nextPageBtn').disabled = true;
+        return;
+    }
 
-            let startIdx = 0;
-            let endIdx = totalItems;
-            let totalPages = 1;
+    let startIdx = 0;
+    let endIdx = totalItems;
+    let totalPages = 1;
 
-            if (pageSize !== 'all') {
-                const ps = parseInt(pageSize);
-                totalPages = Math.ceil(totalItems / ps);
-                if (currentPage > totalPages) currentPage = totalPages;
-                if (currentPage < 1) currentPage = 1;
+    if (pageSize !== 'all') {
+        const ps = parseInt(pageSize);
+        totalPages = Math.ceil(totalItems / ps);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
 
-                startIdx = (currentPage - 1) * ps;
-                endIdx = Math.min(startIdx + ps, totalItems);
-            } else {
-                currentPage = 1;
-                totalPages = 1;
-            }
+        startIdx = (currentPage - 1) * ps;
+        endIdx = Math.min(startIdx + ps, totalItems);
+    } else {
+        currentPage = 1;
+        totalPages = 1;
+    }
 
-            const pageItems = filteredMasterCache.slice(startIdx, endIdx);
+    const pageItems = filteredMasterCache.slice(startIdx, endIdx);
 
-            pageItems.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 transition";
-                tr.innerHTML = `
-                    <td class="p-3 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.refrigerator_model || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.refrigerator_color || '-'}</td>
-                    <td class="p-3 border-r font-medium text-gray-800">${item.commercial_model || '-'}</td>
-                    <td class="p-3 border-r font-semibold text-blue-600">${item.door_model || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.door_color || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.door_type || '-'}</td>
-                    <td class="p-3 border-r text-center font-bold text-emerald-600">${item.quantity_per_unit ?? '-'}</td>
-                    <td class="p-3 text-gray-700">${item.line || '-'}</td>
-                `;
-                tbody.appendChild(tr);
-            });
+    pageItems.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-gray-50 transition";
+        tr.innerHTML = `
+            <td class="p-3 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+            <td class="p-3 border-r text-gray-600">${item.refrigerator_model || '-'}</td>
+            <td class="p-3 border-r text-gray-600">${item.refrigerator_color || '-'}</td>
+            <td class="p-3 border-r font-medium text-gray-800">${item.commercial_model || '-'}</td>
+            <td class="p-3 border-r font-semibold text-blue-600">${item.door_model || '-'}</td>
+            <td class="p-3 border-r text-gray-600">${item.door_color || '-'}</td>
+            <td class="p-3 border-r text-gray-600">${item.door_type || '-'}</td>
+            <td class="p-3 border-r text-center font-bold text-emerald-600">${item.quantity_per_unit ?? '-'}</td>
+            <td class="p-3 text-gray-700">${item.line || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
 
-            document.getElementById('masterCount').textContent = `แสดง ${startIdx + 1} ถึง ${endIdx} จากทั้งหมด ${totalItems} รายการ`;
-            document.getElementById('pageInfo').textContent = `หน้าที่ ${currentPage} / ${totalPages}`;
-            document.getElementById('prevPageBtn').disabled = (currentPage <= 1 || pageSize === 'all');
-            document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages || pageSize === 'all');
-        }
+    document.getElementById('masterCount').textContent = `แสดง ${startIdx + 1} ถึง ${endIdx} จากทั้งหมด ${totalItems} รายการ`;
+    document.getElementById('pageInfo').textContent = `หน้าที่ ${currentPage} / ${totalPages}`;
+    document.getElementById('prevPageBtn').disabled = (currentPage <= 1 || pageSize === 'all');
+    document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages || pageSize === 'all');
+}
 
-        function handleSearchInput() {
-            const keyword = document.getElementById('masterSearch').value.toLowerCase();
-            filteredMasterCache = fullMasterCache.filter(item => {
-                return (
-                    (item.fg_code && item.fg_code.toLowerCase().includes(keyword)) ||
-                    (item.commercial_model && item.commercial_model.toLowerCase().includes(keyword)) ||
-                    (item.door_model && item.door_model.toLowerCase().includes(keyword)) ||
-                    (item.refrigerator_color && item.refrigerator_color.toLowerCase().includes(keyword))
-                );
-            });
-            currentPage = 1;
-            renderMasterTable();
-        }
+function handleSearchInput() {
+    const keyword = document.getElementById('masterSearch').value.toLowerCase();
+    filteredMasterCache = fullMasterCache.filter(item => {
+        return (
+            (item.fg_code && item.fg_code.toLowerCase().includes(keyword)) ||
+            (item.commercial_model && item.commercial_model.toLowerCase().includes(keyword)) ||
+            (item.door_model && item.door_model.toLowerCase().includes(keyword)) ||
+            (item.refrigerator_color && item.refrigerator_color.toLowerCase().includes(keyword))
+        );
+    });
+    currentPage = 1;
+    renderMasterTable();
+}
 
-        function changePageSize() {
-            pageSize = document.getElementById('pageSizeSelect').value;
-            currentPage = 1;
-            renderMasterTable();
-        }
+function changePageSize() {
+    pageSize = document.getElementById('pageSizeSelect').value;
+    currentPage = 1;
+    renderMasterTable();
+}
 
-        function changePage(direction) {
-            if (pageSize === 'all') return;
-            const ps = parseInt(pageSize);
-            const totalPages = Math.ceil(filteredMasterCache.length / ps);
-            
-            currentPage += direction;
-            if (currentPage < 1) currentPage = 1;
-            if (currentPage > totalPages) currentPage = totalPages;
-            
-            renderMasterTable();
-        }
+function changePage(direction) {
+    if (pageSize === 'all') return;
+    const ps = parseInt(pageSize);
+    const totalPages = Math.ceil(filteredMasterCache.length / ps);
+    
+    currentPage += direction;
+    if (currentPage < 1) currentPage = 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    
+    renderMasterTable();
+}
 
-        function switchLine(lineName) {
-            currentLine = lineName;
-            renderTable();
-        }
+async function fetchMasterData(codeVal) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('production_planning_master')
+            .select('*')
+            .ilike('fg_code', codeVal.trim());
+        if (error) return [];
+        return data || [];
+    } catch (err) {
+        return [];
+    }
+}
 
-        function renderTable() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            (productionData[currentLine] || []).forEach(item => addRowData(item));
-        }
+async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
+    if (!matchedRecords || matchedRecords.length === 0) return;
 
-        function addRowData(data) {
-            const tbody = document.getElementById('tableBody');
+    const groupId = 'group_' + Date.now() + '_' + Math.random();
+    row.setAttribute('data-group', groupId);
+
+    const primary = matchedRecords[0];
+    row.querySelector('.ref-code').value = primary.fg_code || '';
+    row.querySelector('.ref-model').value = primary.commercial_model || '';
+    row.querySelector('.ref-platform').value = primary.refrigerator_model || '';
+    row.querySelector('.ref-colour').value = primary.refrigerator_color || '';
+    
+    row.querySelector('.door-model').value = primary.door_model || '';
+    row.querySelector('.door-colour').value = primary.door_color || '';
+    row.querySelector('.door-type').value = primary.door_type || '';
+    row.querySelector('.door-line').value = primary.line || '';
+
+    let initialPlanQty = specifiedPlanQty !== null ? specifiedPlanQty : (row.querySelector('.plan-qty').value || '');
+    row.querySelector('.plan-qty').value = initialPlanQty;
+    calcDoorReq(row.querySelector('.plan-qty'));
+
+    if (matchedRecords.length > 1) {
+        const tbody = document.getElementById('doorReqTableBody');
+        for (let i = 1; i < matchedRecords.length; i++) {
+            const rec = matchedRecords[i];
             const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td class="p-3">${data.model || ''}</td><td class="p-3">${data.door || ''}</td>
-                <td class="p-3 text-center"><input type="number" class="round-hr w-20 border rounded p-1 text-center" value="${data.roundHr || 10}"></td>
-                <td class="p-3 text-center"><input type="number" class="time-val w-20 border rounded p-1 text-center" value="${data.time || 8}"></td>
-                <td class="p-3 text-center"><input type="number" class="pallet w-20 border rounded p-1 text-center" value="${data.pallet || 2}"></td>
-                <td class="p-3 text-center"><input type="number" class="jig w-20 border rounded p-1 text-center" value="${data.jig || 1}"></td>
-                <td class="p-3 font-bold text-indigo-600 text-center plan-val">80</td>
-                <td class="p-3 text-center">-</td>
-            `;
-            tbody.appendChild(newRow);
-        }
-
-        function addRow() { addRowData({ model: 'New Model', door: 'R' }); }
-
-        async function fetchMasterData(codeVal) {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('production_planning_master')
-                    .select('*')
-                    .ilike('fg_code', codeVal.trim());
-                if (error) return [];
-                return data || [];
-            } catch (err) {
-                return [];
-            }
-        }
-
-        async function populateRowData(row, matchedRecords, specifiedPlanQty = null) {
-            if (!matchedRecords || matchedRecords.length === 0) return;
-
-            const groupId = 'group_' + Date.now() + '_' + Math.random();
-            row.setAttribute('data-group', groupId);
-
-            const primary = matchedRecords[0];
-            row.querySelector('.ref-code').value = primary.fg_code || '';
-            row.querySelector('.ref-model').value = primary.commercial_model || '';
-            row.querySelector('.ref-platform').value = primary.refrigerator_model || '';
-            row.querySelector('.ref-colour').value = primary.refrigerator_color || '';
-            
-            row.querySelector('.door-model').value = primary.door_model || '';
-            row.querySelector('.door-colour').value = primary.door_color || '';
-            row.querySelector('.door-type').value = primary.door_type || '';
-            row.querySelector('.door-line').value = primary.line || '';
-
-            let initialPlanQty = specifiedPlanQty !== null ? specifiedPlanQty : (row.querySelector('.plan-qty').value || '');
-            row.querySelector('.plan-qty').value = initialPlanQty;
-            calcDoorReq(row.querySelector('.plan-qty'));
-
-            if (matchedRecords.length > 1) {
-                const tbody = document.getElementById('doorReqTableBody');
-                for (let i = 1; i < matchedRecords.length; i++) {
-                    const rec = matchedRecords[i];
-                    const newRow = document.createElement('tr');
-                    newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
-                    newRow.setAttribute('data-group', groupId);
-                    newRow.innerHTML = `
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" readonly></td>
-                        <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${initialPlanQty}" oninput="calcDoorReq(this)"></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}" readonly></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}" readonly></td>
-                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}" readonly></td>
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || ''}" readonly></td>
-                        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.door_color || ''}" readonly></td>
-                        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}" readonly></td>
-                        <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
-                        <td class="p-2 flex items-center justify-center gap-1">
-                            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || ''}" readonly>
-                            <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
-                        </td>
-                    `;
-                    tbody.insertBefore(newRow, row.nextSibling);
-                    calcDoorReq(newRow.querySelector('.plan-qty'));
-                }
-            }
-            updateKPIs();
-        }
-
-        async function handleCodeInput(event, inputElement) {
-            const row = inputElement.closest('tr');
-            const val = inputElement.value.trim();
-            if (val.length < 3) return;
-            const records = await fetchMasterData(val);
-            if (records.length > 0) {
-                await populateRowData(row, records);
-            }
-        }
-
-        async function handleKey(event, inputElement) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                const row = inputElement.closest('tr');
-                const val = inputElement.value.trim();
-                const records = await fetchMasterData(val);
-                if (records.length > 0) {
-                    await populateRowData(row, records);
-                }
-            }
-        }
-
-        async function handleExcelPaste(event, inputElement) {
-            const clipboardData = event.clipboardData || window.clipboardData;
-            const pastedData = clipboardData.getData('Text');
-            if (pastedData.includes('\t') || pastedData.includes('\n')) {
-                event.preventDefault();
-                const lines = pastedData.split('\n').filter(r => r.trim() !== '');
-                
-                document.querySelectorAll('.door-req-row').forEach(r => {
-                    if(!r.querySelector('.ref-code').value.trim() && !r.querySelector('.plan-qty').value.trim()) r.remove();
-                });
-
-                let currentRow = inputElement.closest('tr');
-                if(!currentRow || !document.body.contains(currentRow)) {
-                    addDoorRequirementRow();
-                    const remainingRows = document.querySelectorAll('.door-req-row');
-                    currentRow = remainingRows[remainingRows.length - 1];
-                }
-
-                for (let index = 0; index < lines.length; index++) {
-                    const cols = lines[index].split('\t').map(c => c.trim());
-                    const codeVal = cols[0] || '';
-                    const planQtyVal = cols[1] ? parseFloat(cols[1]) : null;
-                    if (!codeVal) continue;
-
-                    let targetRow = currentRow;
-                    if (index > 0) {
-                        addDoorRequirementRow();
-                        const allRows = document.querySelectorAll('.door-req-row');
-                        targetRow = allRows[allRows.length - 1];
-                    }
-
-                    targetRow.querySelector('.ref-code').value = codeVal;
-                    const records = await fetchMasterData(codeVal);
-                    if (records.length > 0) {
-                        await populateRowData(targetRow, records, planQtyVal);
-                    }
-                }
-            }
-        }
-
-        function addDoorRequirementRow(prefill = {}) {
-            const tbody = document.getElementById('doorReqTableBody');
-            const newRow = document.createElement('tr');
-            const groupId = 'group_' + Date.now() + '_' + Math.random();
             newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
             newRow.setAttribute('data-group', groupId);
             newRow.innerHTML = `
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
-                <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty !== undefined ? prefill.planQty : ''}" oninput="calcDoorReq(this)"></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}" readonly></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}" readonly></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}" readonly></td>
-                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.door_model || ''}" readonly></td>
-                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.door_color || ''}" readonly></td>
-                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" readonly></td>
+                <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${initialPlanQty}" oninput="calcDoorReq(this)"></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${rec.refrigerator_color || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${rec.door_model || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${rec.door_color || ''}" readonly></td>
+                <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${rec.door_type || ''}" readonly></td>
                 <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
                 <td class="p-2 flex items-center justify-center gap-1">
-                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || ''}" readonly>
+                    <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${rec.line || ''}" readonly>
                     <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
                 </td>
             `;
-            tbody.appendChild(newRow);
+            tbody.insertBefore(newRow, row.nextSibling);
             calcDoorReq(newRow.querySelector('.plan-qty'));
         }
+    }
+    updateKPIs();
+}
 
-        function calcDoorReq(element) {
-            const row = element.closest('tr');
-            const groupId = row.getAttribute('data-group');
-            const newVal = element.value;
+async function handleCodeInput(event, inputElement) {
+    const row = inputElement.closest('tr');
+    const val = inputElement.value.trim();
+    if (val.length < 3) return;
+    const records = await fetchMasterData(val);
+    if (records.length > 0) {
+        await populateRowData(row, records);
+    }
+}
 
-            if (groupId) {
-                const groupRows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
-                groupRows.forEach(r => {
-                    const targetInput = r.querySelector('.plan-qty');
-                    if (targetInput && targetInput !== element) targetInput.value = newVal;
-                    const pQty = parseFloat(newVal) || 0;
-                    r.querySelector('.total-needed').textContent = pQty.toLocaleString();
-                });
-            } else {
-                const planQty = parseFloat(newVal) || 0;
-                row.querySelector('.total-needed').textContent = planQty.toLocaleString();
-            }
-            updateKPIs();
+async function handleExcelPaste(event, inputElement) {
+    const clipboardData = event.clipboardData || window.clipboardData;
+    const pastedData = clipboardData.getData('Text');
+    if (pastedData.includes('\t') || pastedData.includes('\n')) {
+        event.preventDefault();
+        const lines = pastedData.split('\n').filter(r => r.trim() !== '');
+        
+        document.querySelectorAll('.door-req-row').forEach(r => {
+            if(!r.querySelector('.ref-code').value.trim() && !r.querySelector('.plan-qty').value.trim()) r.remove();
+        });
+
+        let currentRow = inputElement.closest('tr');
+        if(!currentRow || !document.body.contains(currentRow)) {
+            addDoorRequirementRow();
+            const remainingRows = document.querySelectorAll('.door-req-row');
+            currentRow = remainingRows[remainingRows.length - 1];
         }
 
-        function updateKPIs() {
-            let totalPlanRef = 0, totalPlanDoor = 0, aDoor = 0, bDoor = 0, cDoor = 0, dnd = 0;
-            const rows = document.querySelectorAll('.door-req-row');
-            const processedGroups = new Set();
-            const summaryMap = {};
+        for (let index = 0; index < lines.length; index++) {
+            const cols = lines[index].split('\t').map(c => c.trim());
+            const codeVal = cols[0] || '';
+            const planQtyVal = cols[1] ? parseFloat(cols[1]) : null;
+            if (!codeVal) continue;
 
-            rows.forEach(row => {
-                const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
-                const totalNeeded = parseFloat(row.querySelector('.total-needed').textContent.replace(/,/g, '')) || 0;
-                const line = (row.querySelector('.door-line').value || '').trim();
-                const lineLower = line.toLowerCase();
-                const groupId = row.getAttribute('data-group') || row;
-
-                const doorModel = (row.querySelector('.door-model').value || '').trim();
-                const doorColour = (row.querySelector('.door-colour').value || '').trim();
-                const doorType = (row.querySelector('.door-type').value || '').trim();
-
-                if (doorModel) {
-                    const key = `${doorModel}_${doorColour}_${doorType}_${line}`;
-                    if (!summaryMap[key]) {
-                        summaryMap[key] = { model: doorModel, colour: doorColour, type: doorType, line: line, total: 0 };
-                    }
-                    summaryMap[key].total += totalNeeded;
-                }
-
-                if (!processedGroups.has(groupId)) {
-                    processedGroups.add(groupId);
-                    totalPlanRef += planQty;
-                }
-
-                totalPlanDoor += totalNeeded;
-                if (lineLower.includes('dnd')) dnd += totalNeeded;
-                else if (lineLower.includes('a')) aDoor += totalNeeded;
-                else if (lineLower.includes('b')) bDoor += totalNeeded;
-                else if (lineLower.includes('c')) cDoor += totalNeeded;
-            });
-
-            document.getElementById('kpi-plan-ref').textContent = totalPlanRef.toLocaleString();
-            document.getElementById('kpi-plan-door').textContent = totalPlanDoor.toLocaleString();
-            document.getElementById('kpi-a-door').textContent = aDoor.toLocaleString();
-            document.getElementById('kpi-b-door').textContent = bDoor.toLocaleString();
-            document.getElementById('kpi-c-door').textContent = cDoor.toLocaleString();
-            document.getElementById('kpi-dnd').textContent = dnd.toLocaleString();
-
-            renderSummaryTable(summaryMap);
-        }
-
-        function renderSummaryTable(summaryMap) {
-            const summaryTbody = document.getElementById('summaryTableBody');
-            summaryTbody.innerHTML = '';
-            const keys = Object.keys(summaryMap);
-            if (keys.length === 0) {
-                summaryTbody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-gray-400">ยังไม่มีข้อมูลสรุป</td></tr>`;
-                return;
+            let targetRow = currentRow;
+            if (index > 0) {
+                addDoorRequirementRow();
+                const allRows = document.querySelectorAll('.door-req-row');
+                targetRow = allRows[allRows.length - 1];
             }
 
-            keys.forEach(key => {
-                const item = summaryMap[key];
-                const dayVal = item.total / 2;
-                const nightVal = item.total / 2;
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 transition";
-                tr.innerHTML = `
-                    <td class="p-3 border-r font-medium text-gray-800">${item.model}</td>
-                    <td class="p-3 border-r text-gray-600">${item.colour}</td>
-                    <td class="p-3 border-r text-gray-600">${item.type}</td>
-                    <td class="p-3 border-r text-gray-700 font-semibold">${item.line}</td>
-                    <td class="p-3 border-r text-amber-600 font-bold">${dayVal % 1 === 0 ? dayVal.toLocaleString() : dayVal.toFixed(1)}</td>
-                    <td class="p-3 border-r text-indigo-600 font-bold">${nightVal % 1 === 0 ? nightVal.toLocaleString() : nightVal.toFixed(1)}</td>
-                    <td class="p-3 font-bold text-emerald-700">${item.total.toLocaleString()}</td>
-                `;
-                summaryTbody.appendChild(tr);
-            });
+            targetRow.querySelector('.ref-code').value = codeVal;
+            const records = await fetchMasterData(codeVal);
+            if (records.length > 0) {
+                await populateRowData(targetRow, records, planQtyVal);
+            }
+        }
+    }
+}
+
+function addDoorRequirementRow(prefill = {}) {
+    const tbody = document.getElementById('doorReqTableBody');
+    const newRow = document.createElement('tr');
+    const groupId = 'group_' + Date.now() + '_' + Math.random();
+    newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
+    newRow.setAttribute('data-group', groupId);
+    newRow.innerHTML = `
+        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${prefill.code || ''}" oninput="handleCodeInput(event, this)" onpaste="handleExcelPaste(event, this)"></td>
+        <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${prefill.planQty !== undefined ? prefill.planQty : ''}" oninput="calcDoorReq(this)"></td>
+        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${prefill.commercial_model || ''}" readonly></td>
+        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${prefill.refrigerator_model || ''}" readonly></td>
+        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs ref-colour" value="${prefill.refrigerator_color || ''}" readonly></td>
+        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs door-model" value="${prefill.door_model || ''}" readonly></td>
+        <td class="p-2 border-r"><input type="text" class="w-20 p-1 border rounded text-center text-xs door-colour" value="${prefill.door_color || ''}" readonly></td>
+        <td class="p-2 border-r"><input type="text" class="w-14 p-1 border rounded text-center text-xs door-type" value="${prefill.door_type || ''}" readonly></td>
+        <td class="p-2 border-r bg-emerald-50/30 font-bold text-indigo-600 total-needed">0</td>
+        <td class="p-2 flex items-center justify-center gap-1">
+            <input type="text" class="w-16 p-1 border rounded text-center text-xs door-line" value="${prefill.line || ''}" readonly>
+            <button onclick="this.closest('tr').remove(); updateKPIs();" class="text-red-500 hover:text-red-700 text-xs px-1 font-bold">×</button>
+        </td>
+    `;
+    tbody.appendChild(newRow);
+    calcDoorReq(newRow.querySelector('.plan-qty'));
+}
+
+function calcDoorReq(element) {
+    const row = element.closest('tr');
+    const groupId = row.getAttribute('data-group');
+    const newVal = element.value;
+
+    if (groupId) {
+        const groupRows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
+        groupRows.forEach(r => {
+            const targetInput = r.querySelector('.plan-qty');
+            if (targetInput && targetInput !== element) targetInput.value = newVal;
+            const pQty = parseFloat(newVal) || 0;
+            r.querySelector('.total-needed').textContent = pQty.toLocaleString();
+        });
+    } else {
+        const planQty = parseFloat(newVal) || 0;
+        row.querySelector('.total-needed').textContent = planQty.toLocaleString();
+    }
+    updateKPIs();
+}
+
+function updateKPIs() {
+    let totalPlanRef = 0, totalPlanDoor = 0, aDoor = 0, bDoor = 0, cDoor = 0, dnd = 0;
+    const rows = document.querySelectorAll('.door-req-row');
+    const processedGroups = new Set();
+    const summaryMap = {};
+
+    rows.forEach(row => {
+        const planQty = parseFloat(row.querySelector('.plan-qty').value) || 0;
+        const totalNeeded = parseFloat(row.querySelector('.total-needed').textContent.replace(/,/g, '')) || 0;
+        const line = (row.querySelector('.door-line').value || '').trim();
+        const lineLower = line.toLowerCase();
+        const groupId = row.getAttribute('data-group') || row;
+
+        const doorModel = (row.querySelector('.door-model').value || '').trim();
+        const doorColour = (row.querySelector('.door-colour').value || '').trim();
+        const doorType = (row.querySelector('.door-type').value || '').trim();
+
+        if (doorModel) {
+            const key = `${doorModel}_${doorColour}_${doorType}_${line}`;
+            if (!summaryMap[key]) {
+                summaryMap[key] = { model: doorModel, colour: doorColour, type: doorType, line: line, total: 0 };
+            }
+            summaryMap[key].total += totalNeeded;
+        }
+
+        if (!processedGroups.has(groupId)) {
+            processedGroups.add(groupId);
+            totalPlanRef += planQty;
+        }
+
+        totalPlanDoor += totalNeeded;
+        if (lineLower.includes('dnd')) dnd += totalNeeded;
+        else if (lineLower.includes('a')) aDoor += totalNeeded;
+        else if (lineLower.includes('b')) bDoor += totalNeeded;
+        else if (lineLower.includes('c')) cDoor += totalNeeded;
+    });
+
+    document.getElementById('kpi-plan-ref').textContent = totalPlanRef.toLocaleString();
+    document.getElementById('kpi-plan-door').textContent = totalPlanDoor.toLocaleString();
+    document.getElementById('kpi-a-door').textContent = aDoor.toLocaleString();
+    document.getElementById('kpi-b-door').textContent = bDoor.toLocaleString();
+    document.getElementById('kpi-c-door').textContent = cDoor.toLocaleString();
+    document.getElementById('kpi-dnd').textContent = dnd.toLocaleString();
+
+    renderSummaryTable(summaryMap);
+}
+
+function renderSummaryTable(summaryMap) {
+    const summaryTbody = document.getElementById('summaryTableBody');
+    summaryTbody.innerHTML = '';
+    const keys = Object.keys(summaryMap);
+    if (keys.length === 0) {
+        summaryTbody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-gray-400">ยังไม่มีข้อมูลสรุป</td></tr>`;
+        return;
+    }
+
+    keys.forEach(key => {
+        const item = summaryMap[key];
+        const dayVal = item.total / 2;
+        const nightVal = item.total / 2;
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-gray-50 transition";
+        tr.innerHTML = `
+            <td class="p-3 border-r font-medium text-gray-800">${item.model}</td>
+            <td class="p-3 border-r text-gray-600">${item.colour}</td>
+            <td class="p-3 border-r text-gray-600">${item.type}</td>
+            <td class="p-3 border-r text-gray-700 font-semibold">${item.line}</td>
+            <td class="p-3 border-r text-amber-600 font-bold">${dayVal % 1 === 0 ? dayVal.toLocaleString() : dayVal.toFixed(1)}</td>
+            <td class="p-3 border-r text-indigo-600 font-bold">${nightVal % 1 === 0 ? nightVal.toLocaleString() : nightVal.toFixed(1)}</td>
+            <td class="p-3 font-bold text-emerald-700">${item.total.toLocaleString()}</td>
+        `;
+        summaryTbody.appendChild(tr);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    switchTab('dailystock');
+});
         }
 
         document.addEventListener('DOMContentLoaded', () => {
