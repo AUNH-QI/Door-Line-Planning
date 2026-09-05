@@ -188,13 +188,13 @@
                         <thead>
                             <tr class="border-b border-gray-200 text-gray-700 bg-gray-100">
                                 <th class="p-3 border-r">fg_code</th>
+                                <th class="p-3 border-r">refrigerator_model</th>
+                                <th class="p-3 border-r">refrigerator_color</th>
                                 <th class="p-3 border-r">commercial_model</th>
-                                <th class="p-3 border-r">group</th>
-                                <th class="p-3 border-r">material</th>
-                                <th class="p-3 border-r">colour</th>
-                                <th class="p-3 border-r">type</th>
-                                <th class="p-3 border-r">door_color</th>
                                 <th class="p-3 border-r">door_model</th>
+                                <th class="p-3 border-r">door_color</th>
+                                <th class="p-3 border-r">door_type</th>
+                                <th class="p-3 border-r">quantity_per_unit</th>
                                 <th class="p-3 border-r">line</th>
                             </tr>
                         </thead>
@@ -283,13 +283,13 @@
                 tr.className = "hover:bg-gray-50 transition";
                 tr.innerHTML = `
                     <td class="p-3 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.refrigerator_model || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.refrigerator_color || '-'}</td>
                     <td class="p-3 border-r font-medium text-gray-800">${item.commercial_model || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.group || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.material || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.refrigerator_color || item.colour || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.door_type || item.type || '-'}</td>
-                    <td class="p-3 border-r text-gray-600">${item.door_color || '-'}</td>
                     <td class="p-3 border-r font-semibold text-blue-600">${item.door_model || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.door_color || '-'}</td>
+                    <td class="p-3 border-r text-gray-600">${item.door_type || '-'}</td>
+                    <td class="p-3 border-r text-center font-bold text-emerald-600">${item.quantity_per_unit ?? '-'}</td>
                     <td class="p-3 text-gray-700">${item.line || '-'}</td>
                 `;
                 tbody.appendChild(tr);
@@ -508,7 +508,6 @@
             if (groupId) {
                 const groupRows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
                 groupRows.forEach(r => {
-                    const input = r.querySelector('.plan-xx'); // safe check
                     const targetInput = r.querySelector('.plan-qty');
                     if (targetInput && targetInput !== element) {
                         targetInput.value = newVal;
@@ -576,7 +575,6 @@
             document.getElementById('kpi-plan-ref').textContent = totalPlanRef.toLocaleString();
             document.getElementById('kpi-plan-door').textContent = totalPlanDoor.toLocaleString();
             document.getElementById('kpi-a-door').textContent = aDoor.toLocaleString();
-            document.getElementById('kpi-b-door').textContent = bDict = bDoor.toLocaleString(); // fix syntax
             document.getElementById('kpi-b-door').textContent = bDoor.toLocaleString();
             document.getElementById('kpi-c-door').textContent = cDoor.toLocaleString();
             document.getElementById('kpi-dnd').textContent = dnd.toLocaleString();
