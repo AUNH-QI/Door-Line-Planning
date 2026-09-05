@@ -134,37 +134,22 @@
         let currentPage = 1;
         let pageSize = 50;
 
-        function switchTab(tabName) {
-            document.getElementById('view-doors').classList.add('hidden');
-            document.getElementById('view-dailystock').classList.add('hidden');
-
-            document.getElementById('nav-doors').classList.remove('bg-white/20', 'shadow');
-            document.getElementById('nav-dailystock').classList.remove('bg-white/20', 'shadow');
-
-            if(tabName === 'planning') {
-                document.getElementById('view-planning').classList.remove('hidden');
-                document.getElementById('nav-planning').classList.add('bg-white/20', 'shadow');
-            } else if(tabName === 'doors') {
-                document.getElementById('view-doors').classList.remove('hidden');
-                document.getElementById('nav-doors').classList.add('bg-white/20', 'shadow');
-                if(document.getElementById('doorReqTableBody').children.length === 0) {
-                    addDoorRequirementRow();
-                    addDoorRequirementRow();
-                    addDoorRequirementRow();
-                }
-            } else if(tabName === 'dailystock') {
-                document.getElementById('view-dailystock').classList.remove('hidden');
-                document.getElementById('nav-dailystock').classList.add('bg-white/20', 'shadow');
-            } else if(tabName === 'master') {
-                document.getElementById('view-master').classList.remove('hidden');
-                document.getElementById('nav-master').classList.add('bg-white/20', 'shadow');
-                if (fullMasterCache.length === 0) {
-                    fetchMasterStockData();
-                } else {
-                    renderMasterTable();
-                }
-            }
+       function switchTab(tabName) {
+    if (tabName === 'doors') {
+        const targetView = document.getElementById('view-doors');
+        const targetNav = document.getElementById('nav-doors');
+        
+        if (targetView) targetView.classList.remove('hidden');
+        if (targetNav) targetNav.classList.add('bg-white/20', 'shadow');
+        
+        const tableBody = document.getElementById('doorReqTableBody');
+        if (tableBody && tableBody.children.length === 0) {
+            addDoorRequirementRow();
+            addDoorRequirementRow();
+            addDoorRequirementRow();
         }
+    }
+}
 
         async function fetchMasterStockData() {
             const tbody = document.getElementById('masterTableBody');
@@ -552,8 +537,9 @@
         }
 
                 document.addEventListener('DOMContentLoaded', () => {
-                switchTab('doors');
-            });
+    switchLine('Line A');
+    switchTab('doors');
+});
     </script>
 </body>
 </html>
