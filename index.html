@@ -29,6 +29,10 @@
             <div onclick="switchTab('doors')" id="nav-doors" class="p-3 bg-white/20 rounded-xl cursor-pointer shadow" title="จำนวนประตูที่ต้องผลิต">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
             </div>
+            <!-- Nav: Daily Stock -->
+            <div onclick="switchTab('dailystock')" id="nav-dailystock" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="Daily Stock">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+            </div>
             <!-- Nav: DATA BASE -->
             <div onclick="switchTab('master')" id="nav-master" class="p-3 hover:bg-white/10 rounded-xl cursor-pointer transition" title="DATA BASE">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
@@ -165,6 +169,129 @@
             </div>
         </div>
 
+        <!-- View: Daily Stock Management -->
+        <div id="view-dailystock" class="view-section hidden">
+            <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
+                <div>
+                    <span class="text-xs font-bold tracking-widest text-teal-600 uppercase bg-teal-50 px-3 py-1 rounded-full">INVENTORY MANAGEMENT</span>
+                    <h1 class="text-3xl font-extrabold text-gray-800 mt-2">Daily Stock (บันทึกจำนวนสต็อกฝา)</h1>
+                </div>
+                <button onclick="saveDailyStock()" class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md transition">บันทึกข้อมูล Stock</button>
+            </div>
+
+            <!-- Table Type 1: RR, RL, FT, FB -->
+            <div class="custom-card rounded-2xl p-6 mb-8 shadow-lg">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="w-3 h-3 bg-indigo-600 rounded-full"></span> ตารางที่ 1: Type (RR, RL, FT, FB)
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th colspan="6" class="p-2.5 border-r bg-blue-100 text-blue-900 font-bold">REFRIGERATOR / BACKEND INFO</th>
+                                <th colspan="4" class="p-2.5 border-r bg-amber-100 text-amber-900 font-bold">STOCK INPUT (TYPE)</th>
+                                <th class="p-2.5 border-r bg-gray-200 font-bold">DOOR COLOR</th>
+                                <th colspan="4" class="p-2.5 bg-emerald-100 text-emerald-900 font-bold">DOOR MODEL</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50">
+                                <th class="p-2 border-r">fg_code</th><th class="p-2 border-r">commercial_model</th><th class="p-2 border-r">group</th><th class="p-2 border-r">material</th><th class="p-2 border-r">colour</th><th class="p-2 border-r">line</th>
+                                <th class="p-2 border-r bg-amber-50">RR</th><th class="p-2 border-r bg-amber-50">RL</th><th class="p-2 border-r bg-amber-50">FT</th><th class="p-2 border-r bg-amber-50">FB</th>
+                                <th class="p-2 border-r">door_color</th>
+                                <th class="p-2 border-r">RR</th><th class="p-2 border-r">RL</th><th class="p-2 border-r">FT</th><th class="p-2">FB</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTable1Body" class="divide-y divide-gray-100">
+                            <tr><td colspan="15" class="p-4 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table Type 2: R, F -->
+            <div class="custom-card rounded-2xl p-6 mb-8 shadow-lg">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="w-3 h-3 bg-blue-600 rounded-full"></span> ตารางที่ 2: Type (R, F)
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th colspan="6" class="p-2.5 border-r bg-blue-100 text-blue-900 font-bold">REFRIGERATOR / BACKEND INFO</th>
+                                <th colspan="2" class="p-2.5 border-r bg-amber-100 text-amber-900 font-bold">STOCK INPUT (TYPE)</th>
+                                <th class="p-2.5 border-r bg-gray-200 font-bold">DOOR COLOR</th>
+                                <th colspan="4" class="p-2.5 bg-emerald-100 text-emerald-900 font-bold">DOOR MODEL</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50">
+                                <th class="p-2 border-r">fg_code</th><th class="p-2 border-r">commercial_model</th><th class="p-2 border-r">group</th><th class="p-2 border-r">material</th><th class="p-2 border-r">colour</th><th class="p-2 border-r">line</th>
+                                <th class="p-2 border-r bg-amber-50">R</th><th class="p-2 border-r bg-amber-50">F</th>
+                                <th class="p-2 border-r">door_color</th>
+                                <th class="p-2 border-r">R</th><th class="p-2 border-r">F</th><th class="p-2 border-r">null</th><th class="p-2">null</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTable2Body" class="divide-y divide-gray-100">
+                            <tr><td colspan="13" class="p-4 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table Type 3: RR, RL, FR, FL -->
+            <div class="custom-card rounded-2xl p-6 mb-8 shadow-lg">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="w-3 h-3 bg-purple-600 rounded-full"></span> ตารางที่ 3: Type (RR, RL, FR, FL)
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th colspan="6" class="p-2.5 border-r bg-blue-100 text-blue-900 font-bold">REFRIGERATOR / BACKEND INFO</th>
+                                <th colspan="4" class="p-2.5 border-r bg-amber-100 text-amber-900 font-bold">STOCK INPUT (TYPE)</th>
+                                <th class="p-2.5 border-r bg-gray-200 font-bold">DOOR COLOR</th>
+                                <th colspan="4" class="p-2.5 bg-emerald-100 text-emerald-900 font-bold">DOOR MODEL</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50">
+                                <th class="p-2 border-r">fg_code</th><th class="p-2 border-r">commercial_model</th><th class="p-2 border-r">group</th><th class="p-2 border-r">material</th><th class="p-2 border-r">colour</th><th class="p-2 border-r">line</th>
+                                <th class="p-2 border-r bg-amber-50">RR</th><th class="p-2 border-r bg-amber-50">RL</th><th class="p-2 border-r bg-amber-50">FR</th><th class="p-2 border-r bg-amber-50">FL</th>
+                                <th class="p-2 border-r">door_color</th>
+                                <th class="p-2 border-r">RR</th><th class="p-2 border-r">RL</th><th class="p-2 border-r">FR</th><th class="p-2">FL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTable3Body" class="divide-y divide-gray-100">
+                            <tr><td colspan="15" class="p-4 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table Type 4: R only -->
+            <div class="custom-card rounded-2xl p-6 shadow-lg">
+                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="w-3 h-3 bg-amber-600 rounded-full"></span> ตารางที่ 4: Type (R)
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200 text-gray-700 bg-gray-100 text-center">
+                                <th colspan="6" class="p-2.5 border-r bg-blue-100 text-blue-900 font-bold">REFRIGERATOR / BACKEND INFO</th>
+                                <th class="p-2.5 border-r bg-amber-100 text-amber-900 font-bold">STOCK INPUT (TYPE)</th>
+                                <th class="p-2.5 border-r bg-gray-200 font-bold">DOOR COLOR</th>
+                                <th colspan="4" class="p-2.5 bg-emerald-100 text-emerald-900 font-bold">DOOR MODEL</th>
+                            </tr>
+                            <tr class="border-b border-gray-200 text-gray-600 bg-gray-50">
+                                <th class="p-2 border-r">fg_code</th><th class="p-2 border-r">commercial_model</th><th class="p-2 border-r">group</th><th class="p-2 border-r">material</th><th class="p-2 border-r">colour</th><th class="p-2 border-r">line</th>
+                                <th class="p-2 border-r bg-amber-50">R</th>
+                                <th class="p-2 border-r">door_color</th>
+                                <th class="p-2 border-r">R</th><th class="p-2 border-r">null</th><th class="p-2 border-r">null</th><th class="p-2">null</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTable4Body" class="divide-y divide-gray-100">
+                            <tr><td colspan="12" class="p-4 text-center text-gray-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- View: DATA BASE Management -->
         <div id="view-master" class="view-section hidden">
             <div class="custom-card rounded-2xl p-6 mb-8 flex justify-between items-center">
@@ -239,10 +366,12 @@
         function switchTab(tabName) {
             document.getElementById('view-planning').classList.add('hidden');
             document.getElementById('view-doors').classList.add('hidden');
+            document.getElementById('view-dailystock').classList.add('hidden');
             document.getElementById('view-master').classList.add('hidden');
 
             document.getElementById('nav-planning').classList.remove('bg-white/20', 'shadow');
             document.getElementById('nav-doors').classList.remove('bg-white/20', 'shadow');
+            document.getElementById('nav-dailystock').classList.remove('bg-white/20', 'shadow');
             document.getElementById('nav-master').classList.remove('bg-white/20', 'shadow');
 
             if(tabName === 'planning') {
@@ -256,6 +385,14 @@
                     addDoorRequirementRow();
                     addDoorRequirementRow();
                 }
+            } else if(tabName === 'dailystock') {
+                document.getElementById('view-dailystock').classList.remove('hidden');
+                document.getElementById('nav-dailystock').classList.add('bg-white/20', 'shadow');
+                if (fullMasterCache.length === 0) {
+                    fetchMasterStockDataForDailyStock();
+                } else {
+                    renderDailyStockTables();
+                }
             } else if(tabName === 'master') {
                 document.getElementById('view-master').classList.remove('hidden');
                 document.getElementById('nav-master').classList.add('bg-white/20', 'shadow');
@@ -265,6 +402,127 @@
                     renderMasterTable();
                 }
             }
+        }
+
+        async function fetchMasterStockDataForDailyStock() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('production_planning_master')
+                    .select('*')
+                    .order('fg_code', { ascending: true });
+                if (!error) {
+                    fullMasterCache = data || [];
+                    renderDailyStockTables();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderDailyStockTables() {
+            // คัดแยกข้อมูลจำลองตามลักษณะ Type หรือกลุ่มตาราง (แบ่งตามโครงสร้างที่ท่านให้มา)
+            // ตัวอย่าง: ตาราง 1 (RR, RL, FT, FB), ตาราง 2 (R, F), ตาราง 3 (RR, RL, FR, FL), ตาราง 4 (R)
+            const t1Body = document.getElementById('stockTable1Body');
+            const t2Body = document.getElementById('stockTable2Body');
+            const t3Body = document.getElementById('stockTable3Body');
+            const t4Body = document.getElementById('stockTable4Body');
+
+            t1Body.innerHTML = '';
+            t2Body.innerHTML = '';
+            t3Body.innerHTML = '';
+            t4Body.innerHTML = '';
+
+            if (fullMasterCache.length === 0) {
+                t1Body.innerHTML = `<tr><td colspan="15" class="p-4 text-center text-gray-400">ไม่พบข้อมูล</td></tr>`;
+                t2Body.innerHTML = `<tr><td colspan="13" class="p-4 text-center text-gray-400">ไม่พบข้อมูล</td></tr>`;
+                t3Body.innerHTML = `<tr><td colspan="15" class="p-4 text-center text-gray-400">ไม่พบข้อมูล</td></tr>`;
+                t4Body.innerHTML = `<tr><td colspan="12" class="p-4 text-center text-gray-400">ไม่พบข้อมูล</td></tr>`;
+                return;
+            }
+
+            // แบ่งข้อมูลตัวอย่างลงใน 4 ตารางตามประเภท Type ที่พบ
+            fullMasterCache.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition text-center";
+                
+                // จำแนกกลุ่มตารางเบื้องต้นจากข้อมูลหรือ Index
+                if (index % 4 === 0) {
+                    tr.innerHTML = `
+                        <td class="p-2 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+                        <td class="p-2 border-r text-gray-700">${item.commercial_model || '-'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.group || 'Profile'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.material || 'Metal Door'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.refrigerator_color || 'Stainless'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.line || '-'}</td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r text-gray-700">${item.door_color || '-'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'BM 23 29'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'BM 23 29'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'BM 23 29'}</td>
+                        <td class="p-2 text-gray-500">${item.door_model || 'BM 23 29'}</td>
+                    `;
+                    t1Body.appendChild(tr);
+                } else if (index % 4 === 1) {
+                    tr.innerHTML = `
+                        <td class="p-2 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+                        <td class="p-2 border-r text-gray-700">${item.commercial_model || '-'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.group || 'GE'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.material || 'Metal Door'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.refrigerator_color || 'Gloss Black'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.line || '-'}</td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-16 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-16 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r text-gray-700">${item.door_color || '-'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'TM10/12'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'TM10/12'}</td>
+                        <td class="p-2 border-r text-gray-400">null</td>
+                        <td class="p-2 text-gray-400">null</td>
+                    `;
+                    t2Body.appendChild(tr);
+                } else if (index % 4 === 2) {
+                    tr.innerHTML = `
+                        <td class="p-2 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+                        <td class="p-2 border-r text-gray-700">${item.commercial_model || '-'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.group || 'CAFE'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.material || 'Glass Door'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.refrigerator_color || 'Gold'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.line || '-'}</td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-14 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r text-gray-700">${item.door_color || '-'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'BM 23'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'BM 23'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'BM 28'}</td>
+                        <td class="p-2 text-gray-500">${item.door_model || 'BM 28'}</td>
+                    `;
+                    t3Body.appendChild(tr);
+                } else {
+                    tr.innerHTML = `
+                        <td class="p-2 border-r font-bold text-indigo-600">${item.fg_code || '-'}</td>
+                        <td class="p-2 border-r text-gray-700">${item.commercial_model || '-'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.group || '-'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.material || 'Metal Door'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.refrigerator_color || 'Haier White'}</td>
+                        <td class="p-2 border-r text-gray-600">${item.line || '-'}</td>
+                        <td class="p-2 border-r bg-amber-50"><input type="number" class="w-20 p-1 border rounded text-center text-xs" placeholder="0"></td>
+                        <td class="p-2 border-r text-gray-700">${item.door_color || '-'}</td>
+                        <td class="p-2 border-r text-gray-500">${item.door_model || 'FUF14'}</td>
+                        <td class="p-2 border-r text-gray-400">null</td>
+                        <td class="p-2 border-r text-gray-400">null</td>
+                        <td class="p-2 text-gray-400">null</td>
+                    `;
+                    t4Body.appendChild(tr);
+                }
+            });
+        }
+
+        function saveDailyStock() {
+            alert('บันทึกข้อมูล Daily Stock สำเร็จ!');
         }
 
         async function fetchMasterStockData() {
@@ -278,7 +536,6 @@
                     .order('fg_code', { ascending: true });
                 
                 if (error) {
-                    console.error("Supabase Error:", error);
                     tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
                     return;
                 }
@@ -288,7 +545,6 @@
                 currentPage = 1;
                 renderMasterTable();
             } catch (err) {
-                console.error("Fetch Exception:", err);
                 tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-500">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>`;
             }
         }
@@ -298,7 +554,6 @@
             tbody.innerHTML = '';
 
             const totalItems = filteredMasterCache.length;
-            
             if (totalItems === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">ไม่พบข้อมูลในระบบ Stock</td></tr>`;
                 document.getElementById('masterCount').textContent = `แสดง 0 ถึง 0 จากทั้งหมด 0 รายการ`;
@@ -346,7 +601,6 @@
 
             document.getElementById('masterCount').textContent = `แสดง ${startIdx + 1} ถึง ${endIdx} จากทั้งหมด ${totalItems} รายการ`;
             document.getElementById('pageInfo').textContent = `หน้าที่ ${currentPage} / ${totalPages}`;
-            
             document.getElementById('prevPageBtn').disabled = (currentPage <= 1 || pageSize === 'all');
             document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages || pageSize === 'all');
         }
@@ -417,14 +671,9 @@
                     .from('production_planning_master')
                     .select('*')
                     .ilike('fg_code', codeVal.trim());
-                
-                if (error) {
-                    console.error("Supabase Error:", error);
-                    return [];
-                }
+                if (error) return [];
                 return data || [];
             } catch (err) {
-                console.error("Fetch Exception:", err);
                 return [];
             }
         }
@@ -452,14 +701,13 @@
 
             if (matchedRecords.length > 1) {
                 const tbody = document.getElementById('doorReqTableBody');
-
                 for (let i = 1; i < matchedRecords.length; i++) {
                     const rec = matchedRecords[i];
                     const newRow = document.createElement('tr');
                     newRow.className = "hover:bg-gray-50 transition text-center door-req-row";
                     newRow.setAttribute('data-group', groupId);
                     newRow.innerHTML = `
-                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" oninput="handleCodeInput(event, this)" onkeydown="handleKey(event, this)" onpaste="handleExcelPaste(event, this)"></td>
+                        <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-code" value="${rec.fg_code || ''}" readonly></td>
                         <td class="p-2 border-r bg-blue-50/30"><input type="number" class="w-16 p-1 border rounded text-center text-xs font-bold plan-qty" value="${initialPlanQty}" oninput="calcDoorReq(this)"></td>
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-model" value="${rec.commercial_model || ''}" readonly></td>
                         <td class="p-2 border-r"><input type="text" class="w-24 p-1 border rounded text-center text-xs ref-platform" value="${rec.refrigerator_model || ''}" readonly></td>
@@ -484,7 +732,6 @@
             const row = inputElement.closest('tr');
             const val = inputElement.value.trim();
             if (val.length < 3) return;
-
             const records = await fetchMasterData(val);
             if (records.length > 0) {
                 await populateRowData(row, records);
@@ -510,13 +757,8 @@
                 event.preventDefault();
                 const lines = pastedData.split('\n').filter(r => r.trim() !== '');
                 
-                const allCurrentRows = document.querySelectorAll('.door-req-row');
-                allCurrentRows.forEach(r => {
-                    const codeInput = r.querySelector('.ref-code').value.trim();
-                    const qtyInput = r.querySelector('.plan-qty').value.trim();
-                    if(!codeInput && !qtyInput) {
-                        r.remove();
-                    }
+                document.querySelectorAll('.door-req-row').forEach(r => {
+                    if(!r.querySelector('.ref-code').value.trim() && !r.querySelector('.plan-qty').value.trim()) r.remove();
                 });
 
                 let currentRow = inputElement.closest('tr');
@@ -530,7 +772,6 @@
                     const cols = lines[index].split('\t').map(c => c.trim());
                     const codeVal = cols[0] || '';
                     const planQtyVal = cols[1] ? parseFloat(cols[1]) : null;
-
                     if (!codeVal) continue;
 
                     let targetRow = currentRow;
@@ -583,9 +824,7 @@
                 const groupRows = document.querySelectorAll(`tr[data-group="${groupId}"]`);
                 groupRows.forEach(r => {
                     const targetInput = r.querySelector('.plan-qty');
-                    if (targetInput && targetInput !== element) {
-                        targetInput.value = newVal;
-                    }
+                    if (targetInput && targetInput !== element) targetInput.value = newVal;
                     const pQty = parseFloat(newVal) || 0;
                     r.querySelector('.total-needed').textContent = pQty.toLocaleString();
                 });
@@ -593,18 +832,11 @@
                 const planQty = parseFloat(newVal) || 0;
                 row.querySelector('.total-needed').textContent = planQty.toLocaleString();
             }
-
             updateKPIs();
         }
 
         function updateKPIs() {
-            let totalPlanRef = 0;
-            let totalPlanDoor = 0;
-            let aDoor = 0;
-            let bDoor = 0;
-            let cDoor = 0;
-            let dnd = 0;
-
+            let totalPlanRef = 0, totalPlanDoor = 0, aDoor = 0, bDoor = 0, cDoor = 0, dnd = 0;
             const rows = document.querySelectorAll('.door-req-row');
             const processedGroups = new Set();
             const summaryMap = {};
@@ -634,16 +866,10 @@
                 }
 
                 totalPlanDoor += totalNeeded;
-
-                if (lineLower.includes('dnd')) {
-                    dnd += totalNeeded;
-                } else if (lineLower.includes('a')) {
-                    aDoor += totalNeeded;
-                } else if (lineLower.includes('b')) {
-                    bDoor += totalNeeded;
-                } else if (lineLower.includes('c')) {
-                    cDoor += totalNeeded;
-                }
+                if (lineLower.includes('dnd')) dnd += totalNeeded;
+                else if (lineLower.includes('a')) aDoor += totalNeeded;
+                else if (lineLower.includes('b')) bDoor += totalNeeded;
+                else if (lineLower.includes('c')) cDoor += totalNeeded;
             });
 
             document.getElementById('kpi-plan-ref').textContent = totalPlanRef.toLocaleString();
@@ -659,7 +885,6 @@
         function renderSummaryTable(summaryMap) {
             const summaryTbody = document.getElementById('summaryTableBody');
             summaryTbody.innerHTML = '';
-
             const keys = Object.keys(summaryMap);
             if (keys.length === 0) {
                 summaryTbody.innerHTML = `<tr><td colspan="7" class="p-3 text-center text-gray-400">ยังไม่มีข้อมูลสรุป</td></tr>`;
@@ -670,7 +895,6 @@
                 const item = summaryMap[key];
                 const dayVal = item.total / 2;
                 const nightVal = item.total / 2;
-
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50 transition";
                 tr.innerHTML = `
